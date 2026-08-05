@@ -22,10 +22,13 @@ import { Route as AuthenticatedShiftsRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedAppointmentsBookingRouteImport } from './routes/_authenticated/appointments.booking'
 import { Route as AuthenticatedAppointmentsCalendarRouteImport } from './routes/_authenticated/appointments.calendar'
 import { Route as AuthenticatedAttendanceAdjustmentsRouteImport } from './routes/_authenticated/attendance.adjustments'
+import { Route as AuthenticatedAttendanceCheckinRouteImport } from './routes/_authenticated/attendance.checkin'
 import { Route as AuthenticatedAttendanceDailyRouteImport } from './routes/_authenticated/attendance.daily'
 import { Route as AuthenticatedAttendanceLogsRouteImport } from './routes/_authenticated/attendance.logs'
+import { Route as AuthenticatedAttendanceManualRouteImport } from './routes/_authenticated/attendance.manual'
 import { Route as AuthenticatedAttendanceMonthlyRouteImport } from './routes/_authenticated/attendance.monthly'
 import { Route as AuthenticatedAttendanceOvertimeRouteImport } from './routes/_authenticated/attendance.overtime'
+import { Route as AuthenticatedBiometricDevicesRouteImport } from './routes/_authenticated/biometric.devices'
 import { Route as AuthenticatedReportsAttendanceRouteImport } from './routes/_authenticated/reports.attendance'
 import { Route as AuthenticatedReportsExportRouteImport } from './routes/_authenticated/reports.export'
 import { Route as AuthenticatedStaffProfilesRouteImport } from './routes/_authenticated/staff.profiles'
@@ -101,6 +104,12 @@ const AuthenticatedAttendanceAdjustmentsRoute =
     path: '/attendance/adjustments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAttendanceCheckinRoute =
+  AuthenticatedAttendanceCheckinRouteImport.update({
+    id: '/attendance/checkin',
+    path: '/attendance/checkin',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAttendanceDailyRoute =
   AuthenticatedAttendanceDailyRouteImport.update({
     id: '/attendance/daily',
@@ -113,6 +122,12 @@ const AuthenticatedAttendanceLogsRoute =
     path: '/attendance/logs',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAttendanceManualRoute =
+  AuthenticatedAttendanceManualRouteImport.update({
+    id: '/attendance/manual',
+    path: '/attendance/manual',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAttendanceMonthlyRoute =
   AuthenticatedAttendanceMonthlyRouteImport.update({
     id: '/attendance/monthly',
@@ -123,6 +138,12 @@ const AuthenticatedAttendanceOvertimeRoute =
   AuthenticatedAttendanceOvertimeRouteImport.update({
     id: '/attendance/overtime',
     path: '/attendance/overtime',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedBiometricDevicesRoute =
+  AuthenticatedBiometricDevicesRouteImport.update({
+    id: '/biometric/devices',
+    path: '/biometric/devices',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedReportsAttendanceRoute =
@@ -169,10 +190,13 @@ export interface FileRoutesByFullPath {
   '/appointments/booking': typeof AuthenticatedAppointmentsBookingRoute
   '/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
   '/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/attendance/checkin': typeof AuthenticatedAttendanceCheckinRoute
   '/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
   '/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/attendance/manual': typeof AuthenticatedAttendanceManualRoute
   '/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
   '/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/biometric/devices': typeof AuthenticatedBiometricDevicesRoute
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
@@ -192,10 +216,13 @@ export interface FileRoutesByTo {
   '/appointments/booking': typeof AuthenticatedAppointmentsBookingRoute
   '/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
   '/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/attendance/checkin': typeof AuthenticatedAttendanceCheckinRoute
   '/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
   '/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/attendance/manual': typeof AuthenticatedAttendanceManualRoute
   '/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
   '/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/biometric/devices': typeof AuthenticatedBiometricDevicesRoute
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
@@ -217,10 +244,13 @@ export interface FileRoutesById {
   '/_authenticated/appointments/booking': typeof AuthenticatedAppointmentsBookingRoute
   '/_authenticated/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
   '/_authenticated/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/_authenticated/attendance/checkin': typeof AuthenticatedAttendanceCheckinRoute
   '/_authenticated/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
   '/_authenticated/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/_authenticated/attendance/manual': typeof AuthenticatedAttendanceManualRoute
   '/_authenticated/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
   '/_authenticated/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/_authenticated/biometric/devices': typeof AuthenticatedBiometricDevicesRoute
   '/_authenticated/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/_authenticated/reports/export': typeof AuthenticatedReportsExportRoute
   '/_authenticated/staff/profiles': typeof AuthenticatedStaffProfilesRoute
@@ -242,10 +272,13 @@ export interface FileRouteTypes {
     | '/appointments/booking'
     | '/appointments/calendar'
     | '/attendance/adjustments'
+    | '/attendance/checkin'
     | '/attendance/daily'
     | '/attendance/logs'
+    | '/attendance/manual'
     | '/attendance/monthly'
     | '/attendance/overtime'
+    | '/biometric/devices'
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
@@ -265,10 +298,13 @@ export interface FileRouteTypes {
     | '/appointments/booking'
     | '/appointments/calendar'
     | '/attendance/adjustments'
+    | '/attendance/checkin'
     | '/attendance/daily'
     | '/attendance/logs'
+    | '/attendance/manual'
     | '/attendance/monthly'
     | '/attendance/overtime'
+    | '/biometric/devices'
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
@@ -289,10 +325,13 @@ export interface FileRouteTypes {
     | '/_authenticated/appointments/booking'
     | '/_authenticated/appointments/calendar'
     | '/_authenticated/attendance/adjustments'
+    | '/_authenticated/attendance/checkin'
     | '/_authenticated/attendance/daily'
     | '/_authenticated/attendance/logs'
+    | '/_authenticated/attendance/manual'
     | '/_authenticated/attendance/monthly'
     | '/_authenticated/attendance/overtime'
+    | '/_authenticated/biometric/devices'
     | '/_authenticated/reports/attendance'
     | '/_authenticated/reports/export'
     | '/_authenticated/staff/profiles'
@@ -399,6 +438,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAttendanceAdjustmentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/attendance/checkin': {
+      id: '/_authenticated/attendance/checkin'
+      path: '/attendance/checkin'
+      fullPath: '/attendance/checkin'
+      preLoaderRoute: typeof AuthenticatedAttendanceCheckinRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/attendance/daily': {
       id: '/_authenticated/attendance/daily'
       path: '/attendance/daily'
@@ -413,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAttendanceLogsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/attendance/manual': {
+      id: '/_authenticated/attendance/manual'
+      path: '/attendance/manual'
+      fullPath: '/attendance/manual'
+      preLoaderRoute: typeof AuthenticatedAttendanceManualRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/attendance/monthly': {
       id: '/_authenticated/attendance/monthly'
       path: '/attendance/monthly'
@@ -425,6 +478,13 @@ declare module '@tanstack/react-router' {
       path: '/attendance/overtime'
       fullPath: '/attendance/overtime'
       preLoaderRoute: typeof AuthenticatedAttendanceOvertimeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/biometric/devices': {
+      id: '/_authenticated/biometric/devices'
+      path: '/biometric/devices'
+      fullPath: '/biometric/devices'
+      preLoaderRoute: typeof AuthenticatedBiometricDevicesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/reports/attendance': {
@@ -492,10 +552,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPositionsRoute: typeof AuthenticatedPositionsRoute
   AuthenticatedShiftsRoute: typeof AuthenticatedShiftsRoute
   AuthenticatedAttendanceAdjustmentsRoute: typeof AuthenticatedAttendanceAdjustmentsRoute
+  AuthenticatedAttendanceCheckinRoute: typeof AuthenticatedAttendanceCheckinRoute
   AuthenticatedAttendanceDailyRoute: typeof AuthenticatedAttendanceDailyRoute
   AuthenticatedAttendanceLogsRoute: typeof AuthenticatedAttendanceLogsRoute
+  AuthenticatedAttendanceManualRoute: typeof AuthenticatedAttendanceManualRoute
   AuthenticatedAttendanceMonthlyRoute: typeof AuthenticatedAttendanceMonthlyRoute
   AuthenticatedAttendanceOvertimeRoute: typeof AuthenticatedAttendanceOvertimeRoute
+  AuthenticatedBiometricDevicesRoute: typeof AuthenticatedBiometricDevicesRoute
   AuthenticatedReportsAttendanceRoute: typeof AuthenticatedReportsAttendanceRoute
   AuthenticatedReportsExportRoute: typeof AuthenticatedReportsExportRoute
   AuthenticatedStaffProfilesRoute: typeof AuthenticatedStaffProfilesRoute
@@ -513,10 +576,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedShiftsRoute: AuthenticatedShiftsRoute,
   AuthenticatedAttendanceAdjustmentsRoute:
     AuthenticatedAttendanceAdjustmentsRoute,
+  AuthenticatedAttendanceCheckinRoute: AuthenticatedAttendanceCheckinRoute,
   AuthenticatedAttendanceDailyRoute: AuthenticatedAttendanceDailyRoute,
   AuthenticatedAttendanceLogsRoute: AuthenticatedAttendanceLogsRoute,
+  AuthenticatedAttendanceManualRoute: AuthenticatedAttendanceManualRoute,
   AuthenticatedAttendanceMonthlyRoute: AuthenticatedAttendanceMonthlyRoute,
   AuthenticatedAttendanceOvertimeRoute: AuthenticatedAttendanceOvertimeRoute,
+  AuthenticatedBiometricDevicesRoute: AuthenticatedBiometricDevicesRoute,
   AuthenticatedReportsAttendanceRoute: AuthenticatedReportsAttendanceRoute,
   AuthenticatedReportsExportRoute: AuthenticatedReportsExportRoute,
   AuthenticatedStaffProfilesRoute: AuthenticatedStaffProfilesRoute,
