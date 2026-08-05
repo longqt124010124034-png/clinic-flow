@@ -12,12 +12,21 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAppointmentsRouteImport } from './routes/_authenticated/appointments'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedPositionsRouteImport } from './routes/_authenticated/positions'
 import { Route as AuthenticatedShiftsRouteImport } from './routes/_authenticated/shifts'
+import { Route as AuthenticatedAppointmentsCalendarRouteImport } from './routes/_authenticated/appointments.calendar'
+import { Route as AuthenticatedAttendanceAdjustmentsRouteImport } from './routes/_authenticated/attendance.adjustments'
+import { Route as AuthenticatedAttendanceDailyRouteImport } from './routes/_authenticated/attendance.daily'
+import { Route as AuthenticatedAttendanceLogsRouteImport } from './routes/_authenticated/attendance.logs'
+import { Route as AuthenticatedAttendanceMonthlyRouteImport } from './routes/_authenticated/attendance.monthly'
+import { Route as AuthenticatedAttendanceOvertimeRouteImport } from './routes/_authenticated/attendance.overtime'
+import { Route as AuthenticatedReportsAttendanceRouteImport } from './routes/_authenticated/reports.attendance'
 import { Route as AuthenticatedSystemClinicProfileRouteImport } from './routes/_authenticated/system.clinic-profile'
+import { Route as AuthenticatedSystemDevicesRouteImport } from './routes/_authenticated/system.devices'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,6 +42,12 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppointmentsRoute =
+  AuthenticatedAppointmentsRouteImport.update({
+    id: '/appointments',
+    path: '/appointments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -59,77 +74,179 @@ const AuthenticatedShiftsRoute = AuthenticatedShiftsRouteImport.update({
   path: '/shifts',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAppointmentsCalendarRoute =
+  AuthenticatedAppointmentsCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => AuthenticatedAppointmentsRoute,
+  } as any)
+const AuthenticatedAttendanceAdjustmentsRoute =
+  AuthenticatedAttendanceAdjustmentsRouteImport.update({
+    id: '/attendance/adjustments',
+    path: '/attendance/adjustments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAttendanceDailyRoute =
+  AuthenticatedAttendanceDailyRouteImport.update({
+    id: '/attendance/daily',
+    path: '/attendance/daily',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAttendanceLogsRoute =
+  AuthenticatedAttendanceLogsRouteImport.update({
+    id: '/attendance/logs',
+    path: '/attendance/logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAttendanceMonthlyRoute =
+  AuthenticatedAttendanceMonthlyRouteImport.update({
+    id: '/attendance/monthly',
+    path: '/attendance/monthly',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAttendanceOvertimeRoute =
+  AuthenticatedAttendanceOvertimeRouteImport.update({
+    id: '/attendance/overtime',
+    path: '/attendance/overtime',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedReportsAttendanceRoute =
+  AuthenticatedReportsAttendanceRouteImport.update({
+    id: '/reports/attendance',
+    path: '/reports/attendance',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSystemClinicProfileRoute =
   AuthenticatedSystemClinicProfileRouteImport.update({
     id: '/system/clinic-profile',
     path: '/system/clinic-profile',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSystemDevicesRoute =
+  AuthenticatedSystemDevicesRouteImport.update({
+    id: '/system/devices',
+    path: '/system/devices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/appointments': typeof AuthenticatedAppointmentsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/positions': typeof AuthenticatedPositionsRoute
   '/shifts': typeof AuthenticatedShiftsRoute
+  '/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
+  '/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
+  '/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
+  '/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
+  '/system/devices': typeof AuthenticatedSystemDevicesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/appointments': typeof AuthenticatedAppointmentsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/positions': typeof AuthenticatedPositionsRoute
   '/shifts': typeof AuthenticatedShiftsRoute
+  '/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
+  '/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
+  '/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
+  '/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
+  '/system/devices': typeof AuthenticatedSystemDevicesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/appointments': typeof AuthenticatedAppointmentsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
   '/_authenticated/positions': typeof AuthenticatedPositionsRoute
   '/_authenticated/shifts': typeof AuthenticatedShiftsRoute
+  '/_authenticated/appointments/calendar': typeof AuthenticatedAppointmentsCalendarRoute
+  '/_authenticated/attendance/adjustments': typeof AuthenticatedAttendanceAdjustmentsRoute
+  '/_authenticated/attendance/daily': typeof AuthenticatedAttendanceDailyRoute
+  '/_authenticated/attendance/logs': typeof AuthenticatedAttendanceLogsRoute
+  '/_authenticated/attendance/monthly': typeof AuthenticatedAttendanceMonthlyRoute
+  '/_authenticated/attendance/overtime': typeof AuthenticatedAttendanceOvertimeRoute
+  '/_authenticated/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/_authenticated/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
+  '/_authenticated/system/devices': typeof AuthenticatedSystemDevicesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
+    | '/appointments'
     | '/dashboard'
     | '/departments'
     | '/employees'
     | '/positions'
     | '/shifts'
+    | '/appointments/calendar'
+    | '/attendance/adjustments'
+    | '/attendance/daily'
+    | '/attendance/logs'
+    | '/attendance/monthly'
+    | '/attendance/overtime'
+    | '/reports/attendance'
     | '/system/clinic-profile'
+    | '/system/devices'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/appointments'
     | '/dashboard'
     | '/departments'
     | '/employees'
     | '/positions'
     | '/shifts'
+    | '/appointments/calendar'
+    | '/attendance/adjustments'
+    | '/attendance/daily'
+    | '/attendance/logs'
+    | '/attendance/monthly'
+    | '/attendance/overtime'
+    | '/reports/attendance'
     | '/system/clinic-profile'
+    | '/system/devices'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/appointments'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/employees'
     | '/_authenticated/positions'
     | '/_authenticated/shifts'
+    | '/_authenticated/appointments/calendar'
+    | '/_authenticated/attendance/adjustments'
+    | '/_authenticated/attendance/daily'
+    | '/_authenticated/attendance/logs'
+    | '/_authenticated/attendance/monthly'
+    | '/_authenticated/attendance/overtime'
+    | '/_authenticated/reports/attendance'
     | '/_authenticated/system/clinic-profile'
+    | '/_authenticated/system/devices'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -160,6 +277,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/appointments': {
+      id: '/_authenticated/appointments'
+      path: '/appointments'
+      fullPath: '/appointments'
+      preLoaderRoute: typeof AuthenticatedAppointmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -196,6 +320,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedShiftsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/appointments/calendar': {
+      id: '/_authenticated/appointments/calendar'
+      path: '/calendar'
+      fullPath: '/appointments/calendar'
+      preLoaderRoute: typeof AuthenticatedAppointmentsCalendarRouteImport
+      parentRoute: typeof AuthenticatedAppointmentsRoute
+    }
+    '/_authenticated/attendance/adjustments': {
+      id: '/_authenticated/attendance/adjustments'
+      path: '/attendance/adjustments'
+      fullPath: '/attendance/adjustments'
+      preLoaderRoute: typeof AuthenticatedAttendanceAdjustmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/attendance/daily': {
+      id: '/_authenticated/attendance/daily'
+      path: '/attendance/daily'
+      fullPath: '/attendance/daily'
+      preLoaderRoute: typeof AuthenticatedAttendanceDailyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/attendance/logs': {
+      id: '/_authenticated/attendance/logs'
+      path: '/attendance/logs'
+      fullPath: '/attendance/logs'
+      preLoaderRoute: typeof AuthenticatedAttendanceLogsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/attendance/monthly': {
+      id: '/_authenticated/attendance/monthly'
+      path: '/attendance/monthly'
+      fullPath: '/attendance/monthly'
+      preLoaderRoute: typeof AuthenticatedAttendanceMonthlyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/attendance/overtime': {
+      id: '/_authenticated/attendance/overtime'
+      path: '/attendance/overtime'
+      fullPath: '/attendance/overtime'
+      preLoaderRoute: typeof AuthenticatedAttendanceOvertimeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports/attendance': {
+      id: '/_authenticated/reports/attendance'
+      path: '/reports/attendance'
+      fullPath: '/reports/attendance'
+      preLoaderRoute: typeof AuthenticatedReportsAttendanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/system/clinic-profile': {
       id: '/_authenticated/system/clinic-profile'
       path: '/system/clinic-profile'
@@ -203,25 +376,64 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSystemClinicProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/system/devices': {
+      id: '/_authenticated/system/devices'
+      path: '/system/devices'
+      fullPath: '/system/devices'
+      preLoaderRoute: typeof AuthenticatedSystemDevicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedAppointmentsRouteChildren {
+  AuthenticatedAppointmentsCalendarRoute: typeof AuthenticatedAppointmentsCalendarRoute
+}
+
+const AuthenticatedAppointmentsRouteChildren: AuthenticatedAppointmentsRouteChildren =
+  {
+    AuthenticatedAppointmentsCalendarRoute:
+      AuthenticatedAppointmentsCalendarRoute,
+  }
+
+const AuthenticatedAppointmentsRouteWithChildren =
+  AuthenticatedAppointmentsRoute._addFileChildren(
+    AuthenticatedAppointmentsRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppointmentsRoute: typeof AuthenticatedAppointmentsRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
   AuthenticatedPositionsRoute: typeof AuthenticatedPositionsRoute
   AuthenticatedShiftsRoute: typeof AuthenticatedShiftsRoute
+  AuthenticatedAttendanceAdjustmentsRoute: typeof AuthenticatedAttendanceAdjustmentsRoute
+  AuthenticatedAttendanceDailyRoute: typeof AuthenticatedAttendanceDailyRoute
+  AuthenticatedAttendanceLogsRoute: typeof AuthenticatedAttendanceLogsRoute
+  AuthenticatedAttendanceMonthlyRoute: typeof AuthenticatedAttendanceMonthlyRoute
+  AuthenticatedAttendanceOvertimeRoute: typeof AuthenticatedAttendanceOvertimeRoute
+  AuthenticatedReportsAttendanceRoute: typeof AuthenticatedReportsAttendanceRoute
   AuthenticatedSystemClinicProfileRoute: typeof AuthenticatedSystemClinicProfileRoute
+  AuthenticatedSystemDevicesRoute: typeof AuthenticatedSystemDevicesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppointmentsRoute: AuthenticatedAppointmentsRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
   AuthenticatedPositionsRoute: AuthenticatedPositionsRoute,
   AuthenticatedShiftsRoute: AuthenticatedShiftsRoute,
+  AuthenticatedAttendanceAdjustmentsRoute:
+    AuthenticatedAttendanceAdjustmentsRoute,
+  AuthenticatedAttendanceDailyRoute: AuthenticatedAttendanceDailyRoute,
+  AuthenticatedAttendanceLogsRoute: AuthenticatedAttendanceLogsRoute,
+  AuthenticatedAttendanceMonthlyRoute: AuthenticatedAttendanceMonthlyRoute,
+  AuthenticatedAttendanceOvertimeRoute: AuthenticatedAttendanceOvertimeRoute,
+  AuthenticatedReportsAttendanceRoute: AuthenticatedReportsAttendanceRoute,
   AuthenticatedSystemClinicProfileRoute: AuthenticatedSystemClinicProfileRoute,
+  AuthenticatedSystemDevicesRoute: AuthenticatedSystemDevicesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -235,3 +447,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
