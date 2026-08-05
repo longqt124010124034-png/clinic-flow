@@ -28,7 +28,7 @@ import {
   UsersRound,
 } from "lucide-react";
 
-export const APP_ROLES = ["administrator", "manager", "receptionist", "employee"] as const;
+export const APP_ROLES = ["administrator", "manager", "receptionist", "employee", "doctor"] as const;
 export type AppRole = (typeof APP_ROLES)[number];
 
 export const ROLE_LABELS: Record<AppRole, string> = {
@@ -36,6 +36,7 @@ export const ROLE_LABELS: Record<AppRole, string> = {
   manager: "Quản lý phòng khám",
   receptionist: "Lễ tân",
   employee: "Nhân viên",
+  doctor: "Bác sĩ",
 };
 
 export type NavItem = {
@@ -50,16 +51,19 @@ export type NavGroup = {
   items: NavItem[];
 };
 
-const ALL: AppRole[] = ["administrator", "manager", "receptionist", "employee"];
+const ALL: AppRole[] = ["administrator", "manager", "receptionist", "employee", "doctor"];
 const STAFF: AppRole[] = ["administrator", "manager"];
 const FRONT_DESK: AppRole[] = ["administrator", "manager", "receptionist"];
 const ADMIN: AppRole[] = ["administrator"];
+const DOCTOR: AppRole[] = ["administrator", "doctor"];
 
 export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Tổng quan",
     items: [
       { title: "Bảng điều khiển", to: "/dashboard", icon: LayoutDashboard, roles: ALL },
+      { title: "Dashboard Bác sĩ", to: "/doctor/dashboard", icon: LayoutDashboard, roles: DOCTOR },
+      { title: "Dashboard Quản Trị", to: "/admin/dashboard", icon: LayoutDashboard, roles: ADMIN },
     ],
   },
   {
@@ -107,6 +111,15 @@ export const NAV_GROUPS: NavGroup[] = [
       { title: "Báo cáo chấm công", to: "/reports/attendance", icon: Gauge, roles: STAFF },
       { title: "Báo cáo lịch hẹn", to: "/reports/appointments", icon: Activity, roles: FRONT_DESK },
       { title: "Xuất báo cáo", to: "/reports/export", icon: FileSpreadsheet, roles: STAFF },
+    ],
+  },
+  {
+    label: "Hồ sơ của tôi",
+    items: [
+      { title: "Thông tin cá nhân", to: "/doctor/profile", icon: UserCog, roles: DOCTOR },
+      { title: "Lịch khám", to: "/doctor/schedule", icon: CalendarDays, roles: DOCTOR },
+      { title: "Lương", to: "/hr/salary", icon: DollarSign, roles: DOCTOR },
+      { title: "Chấm công", to: "/attendance/daily", icon: Fingerprint, roles: DOCTOR },
     ],
   },
   {
