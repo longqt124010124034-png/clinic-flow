@@ -127,6 +127,10 @@ function DoctorDashboard() {
   const profile = profileQuery.data;
   const stats = statsQuery.data;
 
+  if (!profile || !stats) {
+    return <LoadingState rows={3} />;
+  }
+
   return (
     <div className="space-y-8">
       <PageHeader

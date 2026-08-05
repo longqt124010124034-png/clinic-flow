@@ -78,10 +78,6 @@ function DoctorProfile() {
     },
   });
 
-  if (profileQuery.isLoading || doctorQuery.isLoading) {
-    return <LoadingState rows={3} />;
-  }
-
   if (profileQuery.isError || doctorQuery.isError) {
     return (
       <ErrorState
@@ -92,6 +88,10 @@ function DoctorProfile() {
 
   const profile = profileQuery.data;
   const doctor = doctorQuery.data;
+
+  if (!profile || !doctor || profileQuery.isLoading || doctorQuery.isLoading) {
+    return <LoadingState rows={3} />;
+  }
 
   const startDate = new Date(doctor.start_date);
   const yearsExp = Math.floor(

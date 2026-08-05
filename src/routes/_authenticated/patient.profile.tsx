@@ -121,15 +121,16 @@ function PatientProfile() {
     },
   });
 
-  if (patientQuery.isLoading || appointmentsQuery.isLoading) {
-    return <LoadingState rows={3} />;
-  }
-
   if (patientQuery.isError) {
     return <ErrorState description={patientQuery.error?.message} />;
   }
 
   const patient = patientQuery.data;
+
+  if (!patient || patientQuery.isLoading || appointmentsQuery.isLoading) {
+    return <LoadingState rows={3} />;
+  }
+
   const appointments = appointmentsQuery.data || [];
 
   const age = patient.date_of_birth

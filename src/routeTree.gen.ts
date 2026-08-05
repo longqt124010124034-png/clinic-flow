@@ -40,11 +40,16 @@ import { Route as AuthenticatedHrSalaryRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedIssuesMyReportsRouteImport } from './routes/_authenticated/issues.my-reports'
 import { Route as AuthenticatedIssuesReportRouteImport } from './routes/_authenticated/issues.report'
 import { Route as AuthenticatedPatientProfileRouteImport } from './routes/_authenticated/patient.profile'
+import { Route as AuthenticatedReportsAppointmentsRouteImport } from './routes/_authenticated/reports.appointments'
 import { Route as AuthenticatedReportsAttendanceRouteImport } from './routes/_authenticated/reports.attendance'
 import { Route as AuthenticatedReportsExportRouteImport } from './routes/_authenticated/reports.export'
 import { Route as AuthenticatedStaffProfilesRouteImport } from './routes/_authenticated/staff.profiles'
+import { Route as AuthenticatedSystemAuditLogsRouteImport } from './routes/_authenticated/system.audit-logs'
 import { Route as AuthenticatedSystemClinicProfileRouteImport } from './routes/_authenticated/system.clinic-profile'
 import { Route as AuthenticatedSystemDevicesRouteImport } from './routes/_authenticated/system.devices'
+import { Route as AuthenticatedSystemSettingsRouteImport } from './routes/_authenticated/system.settings'
+import { Route as AuthenticatedSystemSyncRouteImport } from './routes/_authenticated/system.sync'
+import { Route as AuthenticatedSystemUsersRouteImport } from './routes/_authenticated/system.users'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -221,6 +226,12 @@ const AuthenticatedPatientProfileRoute =
     path: '/patient/profile',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedReportsAppointmentsRoute =
+  AuthenticatedReportsAppointmentsRouteImport.update({
+    id: '/reports/appointments',
+    path: '/reports/appointments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedReportsAttendanceRoute =
   AuthenticatedReportsAttendanceRouteImport.update({
     id: '/reports/attendance',
@@ -239,6 +250,12 @@ const AuthenticatedStaffProfilesRoute =
     path: '/staff/profiles',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSystemAuditLogsRoute =
+  AuthenticatedSystemAuditLogsRouteImport.update({
+    id: '/system/audit-logs',
+    path: '/system/audit-logs',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSystemClinicProfileRoute =
   AuthenticatedSystemClinicProfileRouteImport.update({
     id: '/system/clinic-profile',
@@ -249,6 +266,23 @@ const AuthenticatedSystemDevicesRoute =
   AuthenticatedSystemDevicesRouteImport.update({
     id: '/system/devices',
     path: '/system/devices',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSystemSettingsRoute =
+  AuthenticatedSystemSettingsRouteImport.update({
+    id: '/system/settings',
+    path: '/system/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSystemSyncRoute = AuthenticatedSystemSyncRouteImport.update({
+  id: '/system/sync',
+  path: '/system/sync',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSystemUsersRoute =
+  AuthenticatedSystemUsersRouteImport.update({
+    id: '/system/users',
+    path: '/system/users',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -283,11 +317,16 @@ export interface FileRoutesByFullPath {
   '/issues/my-reports': typeof AuthenticatedIssuesMyReportsRoute
   '/issues/report': typeof AuthenticatedIssuesReportRoute
   '/patient/profile': typeof AuthenticatedPatientProfileRoute
+  '/reports/appointments': typeof AuthenticatedReportsAppointmentsRoute
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/system/devices': typeof AuthenticatedSystemDevicesRoute
+  '/system/settings': typeof AuthenticatedSystemSettingsRoute
+  '/system/sync': typeof AuthenticatedSystemSyncRoute
+  '/system/users': typeof AuthenticatedSystemUsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -320,11 +359,16 @@ export interface FileRoutesByTo {
   '/issues/my-reports': typeof AuthenticatedIssuesMyReportsRoute
   '/issues/report': typeof AuthenticatedIssuesReportRoute
   '/patient/profile': typeof AuthenticatedPatientProfileRoute
+  '/reports/appointments': typeof AuthenticatedReportsAppointmentsRoute
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/system/devices': typeof AuthenticatedSystemDevicesRoute
+  '/system/settings': typeof AuthenticatedSystemSettingsRoute
+  '/system/sync': typeof AuthenticatedSystemSyncRoute
+  '/system/users': typeof AuthenticatedSystemUsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -359,11 +403,16 @@ export interface FileRoutesById {
   '/_authenticated/issues/my-reports': typeof AuthenticatedIssuesMyReportsRoute
   '/_authenticated/issues/report': typeof AuthenticatedIssuesReportRoute
   '/_authenticated/patient/profile': typeof AuthenticatedPatientProfileRoute
+  '/_authenticated/reports/appointments': typeof AuthenticatedReportsAppointmentsRoute
   '/_authenticated/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/_authenticated/reports/export': typeof AuthenticatedReportsExportRoute
   '/_authenticated/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/_authenticated/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/_authenticated/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/_authenticated/system/devices': typeof AuthenticatedSystemDevicesRoute
+  '/_authenticated/system/settings': typeof AuthenticatedSystemSettingsRoute
+  '/_authenticated/system/sync': typeof AuthenticatedSystemSyncRoute
+  '/_authenticated/system/users': typeof AuthenticatedSystemUsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -398,11 +447,16 @@ export interface FileRouteTypes {
     | '/issues/my-reports'
     | '/issues/report'
     | '/patient/profile'
+    | '/reports/appointments'
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
+    | '/system/audit-logs'
     | '/system/clinic-profile'
     | '/system/devices'
+    | '/system/settings'
+    | '/system/sync'
+    | '/system/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -435,11 +489,16 @@ export interface FileRouteTypes {
     | '/issues/my-reports'
     | '/issues/report'
     | '/patient/profile'
+    | '/reports/appointments'
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
+    | '/system/audit-logs'
     | '/system/clinic-profile'
     | '/system/devices'
+    | '/system/settings'
+    | '/system/sync'
+    | '/system/users'
   id:
     | '__root__'
     | '/'
@@ -473,11 +532,16 @@ export interface FileRouteTypes {
     | '/_authenticated/issues/my-reports'
     | '/_authenticated/issues/report'
     | '/_authenticated/patient/profile'
+    | '/_authenticated/reports/appointments'
     | '/_authenticated/reports/attendance'
     | '/_authenticated/reports/export'
     | '/_authenticated/staff/profiles'
+    | '/_authenticated/system/audit-logs'
     | '/_authenticated/system/clinic-profile'
     | '/_authenticated/system/devices'
+    | '/_authenticated/system/settings'
+    | '/_authenticated/system/sync'
+    | '/_authenticated/system/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -705,6 +769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPatientProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/reports/appointments': {
+      id: '/_authenticated/reports/appointments'
+      path: '/reports/appointments'
+      fullPath: '/reports/appointments'
+      preLoaderRoute: typeof AuthenticatedReportsAppointmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/reports/attendance': {
       id: '/_authenticated/reports/attendance'
       path: '/reports/attendance'
@@ -726,6 +797,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffProfilesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/system/audit-logs': {
+      id: '/_authenticated/system/audit-logs'
+      path: '/system/audit-logs'
+      fullPath: '/system/audit-logs'
+      preLoaderRoute: typeof AuthenticatedSystemAuditLogsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/system/clinic-profile': {
       id: '/_authenticated/system/clinic-profile'
       path: '/system/clinic-profile'
@@ -738,6 +816,27 @@ declare module '@tanstack/react-router' {
       path: '/system/devices'
       fullPath: '/system/devices'
       preLoaderRoute: typeof AuthenticatedSystemDevicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/system/settings': {
+      id: '/_authenticated/system/settings'
+      path: '/system/settings'
+      fullPath: '/system/settings'
+      preLoaderRoute: typeof AuthenticatedSystemSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/system/sync': {
+      id: '/_authenticated/system/sync'
+      path: '/system/sync'
+      fullPath: '/system/sync'
+      preLoaderRoute: typeof AuthenticatedSystemSyncRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/system/users': {
+      id: '/_authenticated/system/users'
+      path: '/system/users'
+      fullPath: '/system/users'
+      preLoaderRoute: typeof AuthenticatedSystemUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -788,11 +887,16 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIssuesMyReportsRoute: typeof AuthenticatedIssuesMyReportsRoute
   AuthenticatedIssuesReportRoute: typeof AuthenticatedIssuesReportRoute
   AuthenticatedPatientProfileRoute: typeof AuthenticatedPatientProfileRoute
+  AuthenticatedReportsAppointmentsRoute: typeof AuthenticatedReportsAppointmentsRoute
   AuthenticatedReportsAttendanceRoute: typeof AuthenticatedReportsAttendanceRoute
   AuthenticatedReportsExportRoute: typeof AuthenticatedReportsExportRoute
   AuthenticatedStaffProfilesRoute: typeof AuthenticatedStaffProfilesRoute
+  AuthenticatedSystemAuditLogsRoute: typeof AuthenticatedSystemAuditLogsRoute
   AuthenticatedSystemClinicProfileRoute: typeof AuthenticatedSystemClinicProfileRoute
   AuthenticatedSystemDevicesRoute: typeof AuthenticatedSystemDevicesRoute
+  AuthenticatedSystemSettingsRoute: typeof AuthenticatedSystemSettingsRoute
+  AuthenticatedSystemSyncRoute: typeof AuthenticatedSystemSyncRoute
+  AuthenticatedSystemUsersRoute: typeof AuthenticatedSystemUsersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -823,11 +927,16 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIssuesMyReportsRoute: AuthenticatedIssuesMyReportsRoute,
   AuthenticatedIssuesReportRoute: AuthenticatedIssuesReportRoute,
   AuthenticatedPatientProfileRoute: AuthenticatedPatientProfileRoute,
+  AuthenticatedReportsAppointmentsRoute: AuthenticatedReportsAppointmentsRoute,
   AuthenticatedReportsAttendanceRoute: AuthenticatedReportsAttendanceRoute,
   AuthenticatedReportsExportRoute: AuthenticatedReportsExportRoute,
   AuthenticatedStaffProfilesRoute: AuthenticatedStaffProfilesRoute,
+  AuthenticatedSystemAuditLogsRoute: AuthenticatedSystemAuditLogsRoute,
   AuthenticatedSystemClinicProfileRoute: AuthenticatedSystemClinicProfileRoute,
   AuthenticatedSystemDevicesRoute: AuthenticatedSystemDevicesRoute,
+  AuthenticatedSystemSettingsRoute: AuthenticatedSystemSettingsRoute,
+  AuthenticatedSystemSyncRoute: AuthenticatedSystemSyncRoute,
+  AuthenticatedSystemUsersRoute: AuthenticatedSystemUsersRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
