@@ -31,7 +31,7 @@ function PositionsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("positions")
-        .select("id, name, code, description, is_active, display_order, departments(name)")
+        .select("id, name, can_receive_appointments, description, is_active, display_order, departments(name)")
         .is("deleted_at", null)
         .order("display_order");
       if (error) throw error;
@@ -56,20 +56,20 @@ function PositionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Mã</TableHead>
                 <TableHead>Chức danh</TableHead>
                 <TableHead>Phòng ban</TableHead>
                 <TableHead>Mô tả</TableHead>
+                <TableHead>Nhận lịch hẹn</TableHead>
                 <TableHead>Trạng thái</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {(query.data ?? []).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell className="font-medium">{row.code ?? "—"}</TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell className="font-medium">{row.name}</TableCell>
                   <TableCell>{row.departments?.name ?? "—"}</TableCell>
                   <TableCell className="text-muted-foreground">{row.description ?? "—"}</TableCell>
+                  <TableCell>{row.can_receive_appointments ? "Có" : "Không"}</TableCell>
                   <TableCell>
                     <Badge variant={row.is_active ? "default" : "secondary"}>
                       {row.is_active ? "Đang dùng" : "Ngưng"}
