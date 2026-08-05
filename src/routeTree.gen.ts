@@ -16,6 +16,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedPositionsRouteImport } from './routes/_authenticated/positions'
+import { Route as AuthenticatedShiftsRouteImport } from './routes/_authenticated/shifts'
 import { Route as AuthenticatedSystemClinicProfileRouteImport } from './routes/_authenticated/system.clinic-profile'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const AuthenticatedPositionsRoute = AuthenticatedPositionsRouteImport.update({
   path: '/positions',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedShiftsRoute = AuthenticatedShiftsRouteImport.update({
+  id: '/shifts',
+  path: '/shifts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSystemClinicProfileRoute =
   AuthenticatedSystemClinicProfileRouteImport.update({
     id: '/system/clinic-profile',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/positions': typeof AuthenticatedPositionsRoute
+  '/shifts': typeof AuthenticatedShiftsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRoutesByTo {
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
   '/positions': typeof AuthenticatedPositionsRoute
+  '/shifts': typeof AuthenticatedShiftsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRoutesById {
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
   '/_authenticated/positions': typeof AuthenticatedPositionsRoute
+  '/_authenticated/shifts': typeof AuthenticatedShiftsRoute
   '/_authenticated/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRouteTypes {
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/employees'
     | '/positions'
+    | '/shifts'
     | '/system/clinic-profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/employees'
     | '/positions'
+    | '/shifts'
     | '/system/clinic-profile'
   id:
     | '__root__'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/_authenticated/departments'
     | '/_authenticated/employees'
     | '/_authenticated/positions'
+    | '/_authenticated/shifts'
     | '/_authenticated/system/clinic-profile'
   fileRoutesById: FileRoutesById
 }
@@ -177,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPositionsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/shifts': {
+      id: '/_authenticated/shifts'
+      path: '/shifts'
+      fullPath: '/shifts'
+      preLoaderRoute: typeof AuthenticatedShiftsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/system/clinic-profile': {
       id: '/_authenticated/system/clinic-profile'
       path: '/system/clinic-profile'
@@ -192,6 +211,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
   AuthenticatedPositionsRoute: typeof AuthenticatedPositionsRoute
+  AuthenticatedShiftsRoute: typeof AuthenticatedShiftsRoute
   AuthenticatedSystemClinicProfileRoute: typeof AuthenticatedSystemClinicProfileRoute
 }
 
@@ -200,6 +220,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
   AuthenticatedPositionsRoute: AuthenticatedPositionsRoute,
+  AuthenticatedShiftsRoute: AuthenticatedShiftsRoute,
   AuthenticatedSystemClinicProfileRoute: AuthenticatedSystemClinicProfileRoute,
 }
 
