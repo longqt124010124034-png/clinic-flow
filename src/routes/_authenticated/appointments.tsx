@@ -52,7 +52,7 @@ export const Route = createFileRoute("/_authenticated/appointments")({
 type Appointment = {
   id: string;
   appointment_date: string;
-  appointment_time: string;
+  start_time: string;
   patient_name: string;
   patient_phone: string;
   service_name: string;
@@ -78,10 +78,10 @@ function AppointmentsPage() {
       let query = supabase
         .from("appointments")
         .select(
-          "id, appointment_date, appointment_time, patient_name, patient_phone, services(name), status",
+          "id, appointment_date, start_time, patient:patients(full_name, phone), services(name), status",
         )
         .order("appointment_date", { ascending: false })
-        .order("appointment_time", { ascending: true });
+        .order("start_time", { ascending: true });
 
       if (statusFilter) {
         query = query.eq("status", statusFilter);
@@ -102,6 +102,8 @@ function AppointmentsPage() {
       return (
         data?.map((item: any) => ({
           ...item,
+          patient_name: item.patient?.full_name || "—",
+          patient_phone: item.patient?.phone || "—",
           service_name: item.services?.name || "—",
         })) || []
       );
@@ -235,7 +237,7 @@ function AppointmentsPage() {
                   <TableCell className="font-medium">
                     {formatDateTime(
                       appointment.appointment_date,
-                      appointment.appointment_time,
+                      appointment.start_time,
                     )}
                   </TableCell>
                   <TableCell className="flex items-center gap-2">

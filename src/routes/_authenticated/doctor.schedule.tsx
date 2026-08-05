@@ -17,7 +17,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuthSession } from "@/hooks/use-session";
+import { useAuthSession, useCurrentEmployee } from "@/hooks/use-session";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/doctor/schedule")({
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_authenticated/doctor/schedule")({
 interface Appointment {
   id: string;
   appointment_date: string;
-  appointment_time: string;
+  start_time: string;
   patient_name: string;
   patient_phone: string;
   service: string;
@@ -43,11 +43,13 @@ interface Appointment {
 
 function DoctorSchedule() {
   const { session } = useAuthSession();
+  const employeeQuery = useCurrentEmployee(session?.user.id);
+  const employeeId = employeeQuery.data?.id;
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
   const appointmentsQuery = useQuery({
-    queryKey: ["doctor-appointments", session?.user.id, selectedDate],
-    enabled: Boolean(session?.user.id),
+    queryKey: ["doctor-appointments", employeeId, selectedDate],
+    enabled: Boolean(employeeId),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
@@ -55,22 +57,22 @@ function DoctorSchedule() {
           `
           id,
           appointment_date,
-          appointment_time,
+          start_time,
           patient:patients(full_name, phone),
           service:services(name),
           status,
           notes
         `
         )
-        .eq("doctor_id", session.user.id)
+        .eq("assigned_dentist_id", employeeId)
         .eq("appointment_date", selectedDate)
-        .order("appointment_time", { ascending: true });
+        .order("start_time", { ascending: true });
 
       if (error) throw error;
       return (data || []).map((apt) => ({
         id: apt.id,
         appointment_date: apt.appointment_date,
-        appointment_time: apt.appointment_time,
+        start_time: apt.start_time,
         patient_name: apt.patient?.full_name || "N/A",
         patient_phone: apt.patient?.phone || "N/A",
         service: apt.service?.name || "N/A",
@@ -96,8 +98,18 @@ function DoctorSchedule() {
     setSelectedDate(new Date().toISOString().split("T")[0]);
   };
 
-  if (appointmentsQuery.isLoading) {
+  if (employeeQuery.isLoading || appointmentsQuery.isLoading) {
     return <LoadingState rows={3} />;
+  }
+
+  if (appointmentsQuery.isError) {
+    return <ErrorState description={(appointmentsQuery.error as Error).message} />;
+  }
+
+  if (!employeeQuery.data) {
+    return (
+      <ErrorState description="Tài khoản này chưa được liên kết với hồ sơ nhân viên." />
+    );
   }
 
   const appointments = appointmentsQuery.data || [];
@@ -222,7 +234,7 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
               <h3 className="text-lg font-semibold text-gray-900">{appointment.patient_name}</h3>
               <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
                 <Clock className="size-4" />
-                {appointment.appointment_time} • {appointment.service}
+                {appointment.start_time?.slice(0, 5)} • {appointment.service}
               </div>
             </div>
             <Badge className={`${status.bg} ${status.text} border-0`}>

@@ -16,8 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { useSessionProfile } from "@/hooks/use-session";
-import { useAuthSession } from "@/hooks/use-session";
+import { useSessionProfile, useAuthSession, useCurrentEmployee } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/_authenticated/doctor/dashboard")({
   head: () => ({
@@ -42,10 +41,12 @@ interface DoctorStats {
 function DoctorDashboard() {
   const { session } = useAuthSession();
   const profileQuery = useSessionProfile(session?.user.id);
+  const employeeQuery = useCurrentEmployee(session?.user.id);
+  const employeeId = employeeQuery.data?.id;
 
   const statsQuery = useQuery({
-    queryKey: ["doctor-stats", session?.user.id],
-    enabled: Boolean(session?.user.id),
+    queryKey: ["doctor-stats", employeeId],
+    enabled: Boolean(employeeId),
     queryFn: async () => {
       const today = new Date().toISOString().split("T")[0];
       const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
@@ -60,17 +61,17 @@ function DoctorDashboard() {
         supabase
           .from("appointments")
           .select("id", { count: "exact" })
-          .eq("doctor_id", session.user.id)
+          .eq("assigned_dentist_id", employeeId)
           .eq("appointment_date", today),
         supabase
           .from("appointments")
           .select("id", { count: "exact" })
-          .eq("doctor_id", session.user.id)
+          .eq("assigned_dentist_id", employeeId)
           .gte("appointment_date", weekStart),
         supabase
           .from("appointments")
           .select("patient_id", { count: "exact" })
-          .eq("doctor_id", session.user.id)
+          .eq("assigned_dentist_id", employeeId)
           .then((result) => ({
             ...result,
             count: new Set((result.data || []).map((a) => a.patient_id)).size,
@@ -78,7 +79,7 @@ function DoctorDashboard() {
         supabase
           .from("attendance_records")
           .select("late_minutes")
-          .eq("employee_id", session.user.id)
+          .eq("employee_id", employeeId)
           .gte(
             "work_date",
             new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
@@ -86,7 +87,7 @@ function DoctorDashboard() {
         supabase
           .from("salary_config")
           .select("base_salary")
-          .eq("employee_id", session.user.id)
+          .eq("employee_id", employeeId)
           .maybeSingle(),
       ]);
 
@@ -105,15 +106,21 @@ function DoctorDashboard() {
     },
   });
 
-  if (profileQuery.isLoading || statsQuery.isLoading) {
+  if (profileQuery.isLoading || employeeQuery.isLoading || statsQuery.isLoading) {
     return <LoadingState rows={3} />;
   }
 
-  if (profileQuery.isError || statsQuery.isError) {
+  if (profileQuery.isError || employeeQuery.isError || statsQuery.isError) {
     return (
       <ErrorState
-        description={(profileQuery.error || statsQuery.error)?.message}
+        description={(profileQuery.error || employeeQuery.error || statsQuery.error)?.message}
       />
+    );
+  }
+
+  if (!employeeQuery.data) {
+    return (
+      <ErrorState description="Tài khoản này chưa được liên kết với hồ sơ nhân viên. Liên hệ quản trị viên để gắn hồ sơ nhân viên (employees.user_id)." />
     );
   }
 

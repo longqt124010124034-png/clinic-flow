@@ -46,7 +46,7 @@ interface PatientInfo {
 interface AppointmentRecord {
   id: string;
   appointment_date: string;
-  appointment_time: string;
+  start_time: string;
   doctor_name: string;
   service: string;
   status: string;
@@ -69,23 +69,26 @@ function PatientProfile() {
       if (error) throw error;
 
       return {
+        id: data?.id as string | undefined,
         full_name: data?.full_name || session.user.email?.split("@")[0] || "Bệnh nhân",
         email: data?.email || session.user.email || "",
         phone: data?.phone || "Chưa cập nhật",
         date_of_birth: data?.date_of_birth || "",
         gender: data?.gender || "Khác",
         address: data?.address || "Chưa cập nhật",
-        allergy_info: data?.allergy_info || "Không có dị ứng đã biết",
-        medical_conditions: data?.medical_conditions || "Không có",
-        emergency_contact: data?.emergency_contact || "Chưa cập nhật",
+        allergy_info: data?.allergies || "Không có dị ứng đã biết",
+        medical_conditions: data?.medical_notes || "Không có",
+        emergency_contact: "Chưa cập nhật",
         insurance_number: data?.insurance_number || "Chưa có",
       };
     },
   });
 
+  const patientId = patientQuery.data?.id;
+
   const appointmentsQuery = useQuery({
-    queryKey: ["patient-appointments", session?.user.id],
-    enabled: Boolean(session?.user.id),
+    queryKey: ["patient-appointments", patientId],
+    enabled: Boolean(patientId),
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
@@ -93,14 +96,14 @@ function PatientProfile() {
           `
           id,
           appointment_date,
-          appointment_time,
-          doctor:employees(full_name),
+          start_time,
+          doctor:employees!assigned_dentist_id(full_name),
           service:services(name),
           status,
           notes
         `
         )
-        .eq("patient_email", session.user.email)
+        .eq("patient_id", patientId as string)
         .order("appointment_date", { ascending: false })
         .limit(5);
 
@@ -109,7 +112,7 @@ function PatientProfile() {
       return (data || []).map((apt) => ({
         id: apt.id,
         appointment_date: apt.appointment_date,
-        appointment_time: apt.appointment_time,
+        start_time: apt.start_time,
         doctor_name: apt.doctor?.full_name || "N/A",
         service: apt.service?.name || "N/A",
         status: apt.status,
@@ -253,7 +256,7 @@ function PatientProfile() {
                   <div>
                     <p className="font-medium text-gray-900">{apt.service}</p>
                     <p className="text-sm text-gray-600">
-                      {new Date(apt.appointment_date).toLocaleDateString("vi-VN")} lúc {apt.appointment_time}
+                      {new Date(apt.appointment_date).toLocaleDateString("vi-VN")} lúc {apt.start_time?.slice(0, 5)}
                     </p>
                     <p className="text-xs text-gray-500">Bác sĩ: {apt.doctor_name}</p>
                   </div>

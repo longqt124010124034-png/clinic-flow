@@ -137,9 +137,15 @@ CREATE TABLE public.kpi_metrics (
   variance numeric,
   
   created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  
-  UNIQUE (organization_id, metric_date, metric_type, COALESCE(employee_id, '00000000-0000-0000-0000-000000000000'::uuid), COALESCE(department_id, '00000000-0000-0000-0000-000000000000'::uuid))
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX idx_kpi_metrics_unique ON public.kpi_metrics (
+  organization_id,
+  metric_date,
+  metric_type,
+  COALESCE(employee_id, '00000000-0000-0000-0000-000000000000'::uuid),
+  COALESCE(department_id, '00000000-0000-0000-0000-000000000000'::uuid)
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.kpi_metrics TO authenticated;

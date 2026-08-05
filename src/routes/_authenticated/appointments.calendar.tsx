@@ -56,7 +56,7 @@ export const Route = createFileRoute("/_authenticated/appointments/calendar")({
 type Appointment = {
   id: string;
   appointment_date: string;
-  appointment_time: string;
+  start_time: string;
   patient_name: string;
   patient_phone: string;
   service_name: string;
@@ -109,10 +109,10 @@ function AppointmentsCalendarPage() {
       let query = supabase
         .from("appointments")
         .select(
-          "id, appointment_date, appointment_time, patient_name, patient_phone, services(name), status, notes, reminder_sent",
+          "id, appointment_date, start_time, patient:patients(full_name, phone), services(name), status, notes, reminder_sent",
         )
         .eq("appointment_date", selectedDate)
-        .order("appointment_time", { ascending: true });
+        .order("start_time", { ascending: true });
 
       if (statusFilter) {
         query = query.eq("status", statusFilter);
@@ -124,6 +124,8 @@ function AppointmentsCalendarPage() {
       return (
         data?.map((item: any) => ({
           ...item,
+          patient_name: item.patient?.full_name || "—",
+          patient_phone: item.patient?.phone || "—",
           service_name: item.services?.name || "—",
         })) || []
       );
@@ -293,7 +295,7 @@ function AppointmentsCalendarPage() {
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="size-3.5" />
-                          {formatTime(appointment.appointment_time)}
+                          {formatTime(appointment.start_time)}
                         </span>
                       </div>
                     </div>

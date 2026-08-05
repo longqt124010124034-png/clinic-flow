@@ -79,6 +79,24 @@ export function useSessionProfile(userId: string | undefined) {
   });
 }
 
+/** The employees row linked to the current auth user, if any (doctors/staff). */
+export function useCurrentEmployee(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["current-employee", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, full_name, employee_code")
+        .eq("user_id", userId as string)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    staleTime: 60_000,
+  });
+}
+
 export function useClinicProfile(organizationId: string | undefined) {
   return useQuery({
     queryKey: ["clinic-profile", organizationId],

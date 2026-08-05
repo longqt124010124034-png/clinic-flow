@@ -28,6 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthSession, useSessionProfile } from "@/hooks/use-session";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/appointments/booking")({
@@ -46,19 +47,22 @@ export const Route = createFileRoute("/_authenticated/appointments/booking")({
 interface Appointment {
   id: string;
   patient_id: string;
-  doctor_id: string;
+  assigned_dentist_id: string;
   appointment_date: string;
-  appointment_time: string;
+  start_time: string;
+  end_time: string;
   status: "scheduled" | "completed" | "cancelled" | "no-show";
   service_id?: string;
   notes?: string;
   reminder_sent?: boolean;
   patients?: { id: string; full_name: string; phone: string; email: string };
   employees?: { id: string; full_name: string };
-  services?: { id: string; name: string; duration: number };
+  services?: { id: string; name: string; default_duration_minutes: number };
 }
 
 function AppointmentBookingPage() {
+  const { session } = useAuthSession();
+  const profileQuery = useSessionProfile(session?.user.id);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
   const [selectedPatient, setSelectedPatient] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
@@ -87,7 +91,8 @@ function AppointmentBookingPage() {
       const { data, error } = await supabase
         .from("employees")
         .select("id, full_name")
-        .eq("status", "active")
+        .eq("employment_status", "active")
+        .eq("can_receive_appointments", true)
         .order("full_name");
       if (error) throw error;
       return data || [];
@@ -100,7 +105,7 @@ function AppointmentBookingPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
-        .select("id, name, duration")
+        .select("id, name, default_duration_minutes")
         .order("name");
       if (error) throw error;
       return data || [];
@@ -116,9 +121,10 @@ function AppointmentBookingPage() {
         .select(`
           id,
           patient_id,
-          doctor_id,
+          assigned_dentist_id,
           appointment_date,
-          appointment_time,
+          start_time,
+          end_time,
           status,
           service_id,
           notes,
@@ -129,18 +135,18 @@ function AppointmentBookingPage() {
             phone,
             email
           ),
-          employees:doctor_id (
+          employees:assigned_dentist_id (
             id,
             full_name
           ),
           services:service_id (
             id,
             name,
-            duration
+            default_duration_minutes
           )
         `)
         .eq("appointment_date", selectedDate)
-        .order("appointment_time");
+        .order("start_time");
       if (error) throw error;
       return data as Appointment[] | [];
     },
@@ -152,14 +158,26 @@ function AppointmentBookingPage() {
       if (!selectedPatient || !selectedDoctor || !selectedService) {
         throw new Error("Vui lòng chọn bệnh nhân, bác sĩ và dịch vụ");
       }
+      const organizationId = profileQuery.data?.organizationId;
+      if (!organizationId) {
+        throw new Error("Không xác định được phòng khám của tài khoản hiện tại");
+      }
+
+      const duration =
+        servicesQuery.data?.find((s) => s.id === selectedService)?.default_duration_minutes || 30;
+      const [hours, minutes] = time.split(":").map(Number);
+      const endMinutes = hours * 60 + minutes + duration;
+      const endTime = `${String(Math.floor(endMinutes / 60) % 24).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
 
       const { data, error } = await supabase
         .from("appointments")
         .insert({
+          organization_id: organizationId,
           patient_id: selectedPatient,
-          doctor_id: selectedDoctor,
+          assigned_dentist_id: selectedDoctor,
           appointment_date: selectedDate,
-          appointment_time: time,
+          start_time: time,
+          end_time: endTime,
           service_id: selectedService,
           notes,
           status: "scheduled",
@@ -310,7 +328,7 @@ function AppointmentBookingPage() {
                 <SelectContent>
                   {servicesQuery.data?.map((service: any) => (
                     <SelectItem key={service.id} value={service.id}>
-                      {service.name} ({service.duration} phút)
+                      {service.name} ({service.default_duration_minutes} phút)
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -385,7 +403,7 @@ function AppointmentBookingPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="font-semibold">{appointment.appointment_time}</span>
+                          <span className="font-semibold">{appointment.start_time?.slice(0, 5)}</span>
                           <Badge
                             variant={
                               appointment.status === "scheduled"
