@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuthSession, useSessionProfile } from "@/hooks/use-session";
 import { supabase } from "@/integrations/supabase/client";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/system/clinic-profile")({
   head: () => ({
@@ -141,7 +142,7 @@ function ClinicProfilePage() {
       if (!clinic) throw new Error("Chưa có hồ sơ phòng khám");
       const payload = Object.fromEntries(
         Object.entries(values).map(([key, value]) => [key, value === undefined ? null : value]),
-      ) as Record<string, string | number | null>;
+      ) as TablesUpdate<"clinic_profiles">;
       const { error } = await supabase.from("clinic_profiles").update(payload).eq("id", clinic.id);
       if (error) throw error;
 
