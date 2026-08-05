@@ -9,6 +9,7 @@ import {
   CalendarRange,
   ClipboardList,
   Clock,
+  DollarSign,
   FileSpreadsheet,
   Fingerprint,
   Gauge,
@@ -21,6 +22,7 @@ import {
   ShieldCheck,
   Stethoscope,
   Timer,
+  TrendingUp,
   UserCog,
   Users,
   UsersRound,
@@ -77,6 +79,14 @@ export const NAV_GROUPS: NavGroup[] = [
       { title: "Phòng ban", to: "/departments", icon: Building2, roles: STAFF },
       { title: "Chức danh", to: "/positions", icon: BadgeCheck, roles: STAFF },
       { title: "Ca làm việc", to: "/shifts", icon: Clock, roles: STAFF },
+    ],
+  },
+  {
+    label: "Lương & Nhân Sự",
+    items: [
+      { title: "Gán Công Việc", to: "/hr/assignments", icon: TrendingUp, roles: STAFF },
+      { title: "Quản Lý Lương", to: "/hr/salary", icon: DollarSign, roles: STAFF },
+      { title: "Tính Lương", to: "/hr/payroll", icon: Gauge, roles: STAFF },
     ],
   },
   {
