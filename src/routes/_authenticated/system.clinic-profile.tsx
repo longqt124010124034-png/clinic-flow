@@ -137,18 +137,21 @@ function ClinicProfilePage() {
 
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
-      const id = clinicQuery.data?.id;
-      if (!id) throw new Error("Chưa có hồ sơ phòng khám");
-      const { error } = await supabase.from("clinic_profiles").update(values).eq("id", id);
+      const clinic = clinicQuery.data;
+      if (!clinic) throw new Error("Chưa có hồ sơ phòng khám");
+      const payload = Object.fromEntries(
+        Object.entries(values).map(([key, value]) => [key, value === undefined ? null : value]),
+      ) as Record<string, string | number | null>;
+      const { error } = await supabase.from("clinic_profiles").update(payload).eq("id", clinic.id);
       if (error) throw error;
 
       await supabase.from("audit_logs").insert({
-        organization_id: clinicQuery.data.organization_id,
+        organization_id: clinic.organization_id,
         user_id: session?.user.id ?? null,
         actor_name: profileQuery.data?.fullName ?? null,
         action: "clinic_profile.updated",
         entity_type: "clinic_profiles",
-        entity_id: id,
+        entity_id: clinic.id,
         new_values: values,
         user_agent: typeof navigator === "undefined" ? null : navigator.userAgent,
       });
