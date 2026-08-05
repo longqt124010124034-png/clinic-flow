@@ -94,8 +94,8 @@ function DashboardPage() {
 
       {overview.isLoading ? (
         <LoadingState rows={2} />
-      ) : overview.isError ? (
-        <ErrorState description={(overview.error as Error).message} />
+      ) : overview.isError || !overview.data ? (
+        <ErrorState description={(overview.error as Error | null)?.message} />
       ) : (
         <>
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
