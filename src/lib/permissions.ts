@@ -65,14 +65,15 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { title: "Lịch hẹn", to: "/appointments/calendar", icon: CalendarDays, roles: FRONT_DESK },
       { title: "Danh sách hẹn", to: "/appointments", icon: ListChecks, roles: FRONT_DESK },
-      { title: "Hàng chờ nhắc lịch", to: "/appointments/reminders", icon: HeartPulse, roles: FRONT_DESK },
-      { title: "Khách hàng", to: "/patients", icon: UsersRound, roles: FRONT_DESK },
+      { title: "Đặt hẹn khám", to: "/appointments/booking", icon: HeartPulse, roles: FRONT_DESK },
+      { title: "Bệnh nhân", to: "/patients", icon: UsersRound, roles: FRONT_DESK },
     ],
   },
   {
     label: "Nhân sự",
     items: [
       { title: "Nhân viên", to: "/employees", icon: Users, roles: STAFF },
+      { title: "Hồ sơ nhân viên", to: "/staff/profiles", icon: UserCog, roles: STAFF },
       { title: "Phòng ban", to: "/departments", icon: Building2, roles: STAFF },
       { title: "Chức danh", to: "/positions", icon: BadgeCheck, roles: STAFF },
       { title: "Ca làm việc", to: "/shifts", icon: Clock, roles: STAFF },
@@ -93,6 +94,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { title: "Báo cáo chấm công", to: "/reports/attendance", icon: Gauge, roles: STAFF },
       { title: "Báo cáo lịch hẹn", to: "/reports/appointments", icon: Activity, roles: FRONT_DESK },
+      { title: "Xuất báo cáo", to: "/reports/export", icon: FileSpreadsheet, roles: STAFF },
     ],
   },
   {
