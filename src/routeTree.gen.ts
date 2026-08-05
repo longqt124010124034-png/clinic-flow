@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
+import { Route as AuthenticatedPositionsRouteImport } from './routes/_authenticated/positions'
 import { Route as AuthenticatedSystemClinicProfileRouteImport } from './routes/_authenticated/system.clinic-profile'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
   path: '/employees',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPositionsRoute = AuthenticatedPositionsRouteImport.update({
+  id: '/positions',
+  path: '/positions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSystemClinicProfileRoute =
   AuthenticatedSystemClinicProfileRouteImport.update({
     id: '/system/clinic-profile',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/positions': typeof AuthenticatedPositionsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRoutesByTo {
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/employees': typeof AuthenticatedEmployeesRoute
+  '/positions': typeof AuthenticatedPositionsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRoutesById {
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
+  '/_authenticated/positions': typeof AuthenticatedPositionsRoute
   '/_authenticated/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
 }
 export interface FileRouteTypes {
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/departments'
     | '/employees'
+    | '/positions'
     | '/system/clinic-profile'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/departments'
     | '/employees'
+    | '/positions'
     | '/system/clinic-profile'
   id:
     | '__root__'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/employees'
+    | '/_authenticated/positions'
     | '/_authenticated/system/clinic-profile'
   fileRoutesById: FileRoutesById
 }
@@ -158,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEmployeesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/positions': {
+      id: '/_authenticated/positions'
+      path: '/positions'
+      fullPath: '/positions'
+      preLoaderRoute: typeof AuthenticatedPositionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/system/clinic-profile': {
       id: '/_authenticated/system/clinic-profile'
       path: '/system/clinic-profile'
@@ -172,6 +191,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
+  AuthenticatedPositionsRoute: typeof AuthenticatedPositionsRoute
   AuthenticatedSystemClinicProfileRoute: typeof AuthenticatedSystemClinicProfileRoute
 }
 
@@ -179,6 +199,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
+  AuthenticatedPositionsRoute: AuthenticatedPositionsRoute,
   AuthenticatedSystemClinicProfileRoute: AuthenticatedSystemClinicProfileRoute,
 }
 
