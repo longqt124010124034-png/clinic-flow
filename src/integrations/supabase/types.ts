@@ -14,11 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_keys: {
+        Row: {
+          created_at: string
+          created_by: string
+          deleted_at: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          key_hash: string
+          key_name: string
+          last_used_at: string | null
+          organization_id: string
+          scopes: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          deleted_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          key_hash: string
+          key_name: string
+          last_used_at?: string | null
+          organization_id: string
+          scopes?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          deleted_at?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          key_hash?: string
+          key_name?: string
+          last_used_at?: string | null
+          organization_id?: string
+          scopes?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_keys_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_settings: {
         Row: {
           created_at: string
+          created_by: string | null
           group_key: string
           id: string
+          is_system_default: boolean
           organization_id: string
           setting_key: string
           updated_at: string
@@ -26,8 +78,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           group_key: string
           id?: string
+          is_system_default?: boolean
           organization_id: string
           setting_key: string
           updated_at?: string
@@ -35,8 +89,10 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           group_key?: string
           id?: string
+          is_system_default?: boolean
           organization_id?: string
           setting_key?: string
           updated_at?: string
@@ -1133,6 +1189,56 @@ export type Database = {
           },
         ]
       }
+      integration_logs: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          execution_time_ms: number | null
+          id: string
+          integration_name: string
+          integration_type: string
+          organization_id: string
+          request_data: Json | null
+          response_data: Json | null
+          status: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          integration_name: string
+          integration_type: string
+          organization_id: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          integration_name?: string
+          integration_type?: string
+          organization_id?: string
+          request_data?: Json | null
+          response_data?: Json | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kpi_metrics: {
         Row: {
           created_at: string
@@ -1190,6 +1296,112 @@ export type Database = {
           },
           {
             foreignKeyName: "kpi_metrics_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          is_active: boolean
+          organization_id: string
+          subject: string | null
+          template_name: string
+          template_type: string
+          trigger_event: string
+          updated_at: string
+          variables: Json | null
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          subject?: string | null
+          template_name: string
+          template_type: string
+          trigger_event: string
+          updated_at?: string
+          variables?: Json | null
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          subject?: string | null
+          template_name?: string
+          template_type?: string
+          trigger_event?: string
+          updated_at?: string
+          variables?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_templates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          action_text: string | null
+          action_url: string | null
+          created_at: string
+          data: Json | null
+          deleted_at: string | null
+          id: string
+          is_read: boolean
+          message: string
+          notification_type: string
+          organization_id: string
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_text?: string | null
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          deleted_at?: string | null
+          id?: string
+          is_read?: boolean
+          message: string
+          notification_type: string
+          organization_id: string
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_text?: string | null
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          deleted_at?: string | null
+          id?: string
+          is_read?: boolean
+          message?: string
+          notification_type?: string
+          organization_id?: string
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -1564,6 +1776,121 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "shifts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_backups: {
+        Row: {
+          backup_date: string
+          backup_scope: string | null
+          backup_status: string
+          backup_type: string
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          file_size_bytes: number | null
+          file_url: string | null
+          id: string
+          next_backup_date: string | null
+          organization_id: string
+          triggered_by: string | null
+        }
+        Insert: {
+          backup_date: string
+          backup_scope?: string | null
+          backup_status?: string
+          backup_type: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          next_backup_date?: string | null
+          organization_id: string
+          triggered_by?: string | null
+        }
+        Update: {
+          backup_date?: string
+          backup_scope?: string | null
+          backup_status?: string
+          backup_type?: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          next_backup_date?: string | null
+          organization_id?: string
+          triggered_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_backups_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_events: {
+        Row: {
+          actor_email: string | null
+          actor_id: string | null
+          affected_records: Json | null
+          changes: Json | null
+          created_at: string
+          description: string | null
+          event_category: string | null
+          event_type: string
+          id: string
+          organization_id: string
+          severity: string
+          source_ip: string | null
+          subject: string
+          user_agent: string | null
+        }
+        Insert: {
+          actor_email?: string | null
+          actor_id?: string | null
+          affected_records?: Json | null
+          changes?: Json | null
+          created_at?: string
+          description?: string | null
+          event_category?: string | null
+          event_type: string
+          id?: string
+          organization_id: string
+          severity?: string
+          source_ip?: string | null
+          subject: string
+          user_agent?: string | null
+        }
+        Update: {
+          actor_email?: string | null
+          actor_id?: string | null
+          affected_records?: Json | null
+          changes?: Json | null
+          created_at?: string
+          description?: string | null
+          event_category?: string | null
+          event_type?: string
+          id?: string
+          organization_id?: string
+          severity?: string
+          source_ip?: string | null
+          subject?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_events_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
