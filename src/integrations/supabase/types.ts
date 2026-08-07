@@ -1017,6 +1017,186 @@ export type Database = {
           },
         ]
       }
+      export_logs: {
+        Row: {
+          created_at: string
+          errors: number
+          export_date_range: Json | null
+          export_format: string
+          export_type: string
+          exported_by: string | null
+          file_name: string
+          file_size_bytes: number | null
+          file_url: string | null
+          id: string
+          organization_id: string
+          rows_exported: number
+        }
+        Insert: {
+          created_at?: string
+          errors?: number
+          export_date_range?: Json | null
+          export_format: string
+          export_type: string
+          exported_by?: string | null
+          file_name: string
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          organization_id: string
+          rows_exported?: number
+        }
+        Update: {
+          created_at?: string
+          errors?: number
+          export_date_range?: Json | null
+          export_format?: string
+          export_type?: string
+          exported_by?: string | null
+          file_name?: string
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          organization_id?: string
+          rows_exported?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      generated_reports: {
+        Row: {
+          created_at: string
+          data_rows: number
+          deleted_at: string | null
+          file_format: string | null
+          file_url: string | null
+          filters_applied: Json | null
+          generated_at: string
+          generated_by: string | null
+          id: string
+          organization_id: string
+          report_config_id: string | null
+          report_name: string
+          report_type: string
+        }
+        Insert: {
+          created_at?: string
+          data_rows?: number
+          deleted_at?: string | null
+          file_format?: string | null
+          file_url?: string | null
+          filters_applied?: Json | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          organization_id: string
+          report_config_id?: string | null
+          report_name: string
+          report_type: string
+        }
+        Update: {
+          created_at?: string
+          data_rows?: number
+          deleted_at?: string | null
+          file_format?: string | null
+          file_url?: string | null
+          filters_applied?: Json | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          organization_id?: string
+          report_config_id?: string | null
+          report_name?: string
+          report_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generated_reports_report_config_id_fkey"
+            columns: ["report_config_id"]
+            isOneToOne: false
+            referencedRelation: "report_configs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kpi_metrics: {
+        Row: {
+          created_at: string
+          department_id: string | null
+          employee_id: string | null
+          id: string
+          metric_date: string
+          metric_type: string
+          metric_value: number | null
+          organization_id: string
+          target_value: number | null
+          updated_at: string
+          variance: number | null
+        }
+        Insert: {
+          created_at?: string
+          department_id?: string | null
+          employee_id?: string | null
+          id?: string
+          metric_date: string
+          metric_type: string
+          metric_value?: number | null
+          organization_id: string
+          target_value?: number | null
+          updated_at?: string
+          variance?: number | null
+        }
+        Update: {
+          created_at?: string
+          department_id?: string | null
+          employee_id?: string | null
+          id?: string
+          metric_date?: string
+          metric_type?: string
+          metric_value?: number | null
+          organization_id?: string
+          target_value?: number | null
+          updated_at?: string
+          variance?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kpi_metrics_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kpi_metrics_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "kpi_metrics_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -1171,6 +1351,77 @@ export type Database = {
           },
           {
             foreignKeyName: "positions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      report_configs: {
+        Row: {
+          columns: Json
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          email_recipients: string[] | null
+          filter_settings: Json
+          id: string
+          is_active: boolean
+          organization_id: string
+          report_name: string
+          report_type: string
+          schedule_day_of_month: number | null
+          schedule_day_of_week: number | null
+          schedule_enabled: boolean
+          schedule_frequency: string | null
+          schedule_hour: number | null
+          schedule_minute: number | null
+          updated_at: string
+        }
+        Insert: {
+          columns?: Json
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          email_recipients?: string[] | null
+          filter_settings?: Json
+          id?: string
+          is_active?: boolean
+          organization_id: string
+          report_name: string
+          report_type: string
+          schedule_day_of_month?: number | null
+          schedule_day_of_week?: number | null
+          schedule_enabled?: boolean
+          schedule_frequency?: string | null
+          schedule_hour?: number | null
+          schedule_minute?: number | null
+          updated_at?: string
+        }
+        Update: {
+          columns?: Json
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          email_recipients?: string[] | null
+          filter_settings?: Json
+          id?: string
+          is_active?: boolean
+          organization_id?: string
+          report_name?: string
+          report_type?: string
+          schedule_day_of_month?: number | null
+          schedule_day_of_week?: number | null
+          schedule_enabled?: boolean
+          schedule_frequency?: string | null
+          schedule_hour?: number | null
+          schedule_minute?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_configs_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
