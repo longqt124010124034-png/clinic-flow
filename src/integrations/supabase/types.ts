@@ -424,6 +424,69 @@ export type Database = {
           },
         ]
       }
+      attendance_summaries: {
+        Row: {
+          absent_days: number
+          created_at: string
+          date: string
+          early_leave_days: number
+          employee_code: string
+          employee_id: string
+          full_name: string
+          id: string
+          late_days: number
+          organization_id: string
+          overtime_hours: number
+          present_days: number
+          total_days: number
+        }
+        Insert: {
+          absent_days?: number
+          created_at?: string
+          date: string
+          early_leave_days?: number
+          employee_code: string
+          employee_id: string
+          full_name: string
+          id?: string
+          late_days?: number
+          organization_id?: string
+          overtime_hours?: number
+          present_days?: number
+          total_days?: number
+        }
+        Update: {
+          absent_days?: number
+          created_at?: string
+          date?: string
+          early_leave_days?: number
+          employee_code?: string
+          employee_id?: string
+          full_name?: string
+          id?: string
+          late_days?: number
+          organization_id?: string
+          overtime_hours?: number
+          present_days?: number
+          total_days?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_summaries_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_summaries_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_summary: {
         Row: {
           absent_days: number
@@ -795,6 +858,67 @@ export type Database = {
           },
         ]
       }
+      device_logs: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          event_time: string
+          event_type: string
+          id: string
+          mask_detected: boolean | null
+          organization_id: string
+          raw_data: Json
+          temperature: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          event_time?: string
+          event_type: string
+          id?: string
+          mask_detected?: boolean | null
+          organization_id?: string
+          raw_data?: Json
+          temperature?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          event_time?: string
+          event_type?: string
+          id?: string
+          mask_detected?: boolean | null
+          organization_id?: string
+          raw_data?: Json
+          temperature?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_logs_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "device_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "device_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       device_sync_logs: {
         Row: {
           completed_at: string | null
@@ -898,6 +1022,68 @@ export type Database = {
           },
           {
             foreignKeyName: "device_sync_mappings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devices: {
+        Row: {
+          created_at: string
+          device_name: string
+          device_type: string
+          employee_count: number
+          id: string
+          ip_address: string | null
+          is_active: boolean
+          last_sync: string | null
+          last_sync_time: string | null
+          location: string | null
+          organization_id: string
+          serial_number: string
+          status: string
+          sync_count: number
+          users_synced: number
+        }
+        Insert: {
+          created_at?: string
+          device_name: string
+          device_type: string
+          employee_count?: number
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          last_sync?: string | null
+          last_sync_time?: string | null
+          location?: string | null
+          organization_id?: string
+          serial_number: string
+          status?: string
+          sync_count?: number
+          users_synced?: number
+        }
+        Update: {
+          created_at?: string
+          device_name?: string
+          device_type?: string
+          employee_count?: number
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean
+          last_sync?: string | null
+          last_sync_time?: string | null
+          location?: string | null
+          organization_id?: string
+          serial_number?: string
+          status?: string
+          sync_count?: number
+          users_synced?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devices_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -1069,6 +1255,59 @@ export type Database = {
             columns: ["position_id"]
             isOneToOne: false
             referencedRelation: "positions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      error_reports: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          organization_id: string
+          priority: string
+          status: string
+          steps_to_reproduce: string | null
+          title: string
+          updated_at: string
+          user_email: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description: string
+          id?: string
+          organization_id?: string
+          priority?: string
+          status?: string
+          steps_to_reproduce?: string | null
+          title: string
+          updated_at?: string
+          user_email: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          organization_id?: string
+          priority?: string
+          status?: string
+          steps_to_reproduce?: string | null
+          title?: string
+          updated_at?: string
+          user_email?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "error_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -1436,6 +1675,63 @@ export type Database = {
         }
         Relationships: []
       }
+      overtime_records: {
+        Row: {
+          created_at: string
+          duration_hours: number
+          employee_id: string
+          id: string
+          notes: string | null
+          organization_id: string
+          overtime_date: string
+          rate_multiplier: number
+          reason: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          duration_hours?: number
+          employee_id: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          overtime_date: string
+          rate_multiplier?: number
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          duration_hours?: number
+          employee_id?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          overtime_date?: string
+          rate_multiplier?: number
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "overtime_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "overtime_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
           address: string | null
@@ -1506,6 +1802,78 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "patients_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payroll_records: {
+        Row: {
+          absence_deduction: number
+          absent_days: number
+          approved_at: string | null
+          base_salary: number
+          created_at: string
+          employee_id: string
+          id: string
+          insurance: number
+          late_days: number
+          late_deduction: number
+          month: number
+          net_salary: number
+          organization_id: string
+          status: string
+          worked_days: number
+          year: number
+        }
+        Insert: {
+          absence_deduction?: number
+          absent_days?: number
+          approved_at?: string | null
+          base_salary?: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          insurance?: number
+          late_days?: number
+          late_deduction?: number
+          month: number
+          net_salary?: number
+          organization_id?: string
+          status?: string
+          worked_days?: number
+          year: number
+        }
+        Update: {
+          absence_deduction?: number
+          absent_days?: number
+          approved_at?: string | null
+          base_salary?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          insurance?: number
+          late_days?: number
+          late_deduction?: number
+          month?: number
+          net_salary?: number
+          organization_id?: string
+          status?: string
+          worked_days?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payroll_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payroll_records_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -1634,6 +2002,116 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "report_configs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          created_at: string
+          file_format: string
+          file_size: number
+          file_url: string | null
+          generated_by: string | null
+          generated_date: string
+          id: string
+          organization_id: string
+          report_category: string
+          report_name: string
+          report_type: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          file_format?: string
+          file_size?: number
+          file_url?: string | null
+          generated_by?: string | null
+          generated_date?: string
+          id?: string
+          organization_id?: string
+          report_category?: string
+          report_name: string
+          report_type: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          file_format?: string
+          file_size?: number
+          file_url?: string | null
+          generated_by?: string | null
+          generated_date?: string
+          id?: string
+          organization_id?: string
+          report_category?: string
+          report_name?: string
+          report_type?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      salary_config: {
+        Row: {
+          absence_deduction: number
+          allowance: number
+          base_salary: number
+          bonus: number
+          created_at: string
+          employee_id: string
+          id: string
+          insurance_deduction: number
+          late_deduction: number
+          organization_id: string
+          updated_at: string
+        }
+        Insert: {
+          absence_deduction?: number
+          allowance?: number
+          base_salary?: number
+          bonus?: number
+          created_at?: string
+          employee_id: string
+          id?: string
+          insurance_deduction?: number
+          late_deduction?: number
+          organization_id?: string
+          updated_at?: string
+        }
+        Update: {
+          absence_deduction?: number
+          allowance?: number
+          base_salary?: number
+          bonus?: number
+          created_at?: string
+          employee_id?: string
+          id?: string
+          insurance_deduction?: number
+          late_deduction?: number
+          organization_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "salary_config_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: true
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "salary_config_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
