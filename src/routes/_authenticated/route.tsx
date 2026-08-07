@@ -51,6 +51,11 @@ function AuthenticatedLayout() {
   }
 
   const profile = profileQuery.data;
+
+  if (profile.approvalStatus !== "approved" || !profile.isActive) {
+    return <AccountPendingScreen status={profile.approvalStatus} active={profile.isActive} />;
+  }
+
   const allowed = routeRoles(pathname);
   const permitted = allowed === null || hasAnyRole(profile.roles, allowed);
 
@@ -64,3 +69,47 @@ function AuthenticatedLayout() {
     </AppShell>
   );
 }
+
+function AccountPendingScreen({
+  status,
+  active,
+}: {
+  status: "pending" | "approved" | "rejected";
+  active: boolean;
+}) {
+  const signOut = useSignOut();
+  const rejected = status === "rejected";
+  const locked = status === "approved" && !active;
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+      <div className="surface-card w-full max-w-md p-8 text-center">
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10">
+          {rejected || locked ? (
+            <ShieldX className="size-7 text-destructive" />
+          ) : (
+            <Hourglass className="size-7 text-primary" />
+          )}
+        </div>
+        <h1 className="mt-4 text-xl font-semibold">
+          {rejected
+            ? "Yêu cầu truy cập đã bị từ chối"
+            : locked
+              ? "Tài khoản đang bị tạm khóa"
+              : "Tài khoản đang chờ duyệt"}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {rejected
+            ? "Quản trị viên đã từ chối tài khoản này. Vui lòng liên hệ quản lý phòng khám nếu bạn cho rằng đây là nhầm lẫn."
+            : locked
+              ? "Vui lòng liên hệ quản trị viên để mở lại quyền truy cập."
+              : "Quản trị viên cần duyệt tài khoản và phân vai trò trước khi bạn có thể sử dụng hệ thống. Vui lòng đăng nhập lại sau khi được duyệt."}
+        </p>
+        <Button className="mt-6 w-full" variant="outline" onClick={() => void signOut()}>
+          Đăng xuất
+        </Button>
+      </div>
+    </div>
+  );
+}
+

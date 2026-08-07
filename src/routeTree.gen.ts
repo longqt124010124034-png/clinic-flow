@@ -44,6 +44,7 @@ import { Route as AuthenticatedReportsAppointmentsRouteImport } from './routes/_
 import { Route as AuthenticatedReportsAttendanceRouteImport } from './routes/_authenticated/reports.attendance'
 import { Route as AuthenticatedReportsExportRouteImport } from './routes/_authenticated/reports.export'
 import { Route as AuthenticatedStaffProfilesRouteImport } from './routes/_authenticated/staff.profiles'
+import { Route as AuthenticatedSystemAgentRouteImport } from './routes/_authenticated/system.agent'
 import { Route as AuthenticatedSystemAuditLogsRouteImport } from './routes/_authenticated/system.audit-logs'
 import { Route as AuthenticatedSystemClinicProfileRouteImport } from './routes/_authenticated/system.clinic-profile'
 import { Route as AuthenticatedSystemDevicesRouteImport } from './routes/_authenticated/system.devices'
@@ -251,6 +252,12 @@ const AuthenticatedStaffProfilesRoute =
     path: '/staff/profiles',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSystemAgentRoute =
+  AuthenticatedSystemAgentRouteImport.update({
+    id: '/system/agent',
+    path: '/system/agent',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSystemAuditLogsRoute =
   AuthenticatedSystemAuditLogsRouteImport.update({
     id: '/system/audit-logs',
@@ -327,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/system/agent': typeof AuthenticatedSystemAgentRoute
   '/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/system/devices': typeof AuthenticatedSystemDevicesRoute
@@ -370,6 +378,7 @@ export interface FileRoutesByTo {
   '/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/reports/export': typeof AuthenticatedReportsExportRoute
   '/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/system/agent': typeof AuthenticatedSystemAgentRoute
   '/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/system/devices': typeof AuthenticatedSystemDevicesRoute
@@ -415,6 +424,7 @@ export interface FileRoutesById {
   '/_authenticated/reports/attendance': typeof AuthenticatedReportsAttendanceRoute
   '/_authenticated/reports/export': typeof AuthenticatedReportsExportRoute
   '/_authenticated/staff/profiles': typeof AuthenticatedStaffProfilesRoute
+  '/_authenticated/system/agent': typeof AuthenticatedSystemAgentRoute
   '/_authenticated/system/audit-logs': typeof AuthenticatedSystemAuditLogsRoute
   '/_authenticated/system/clinic-profile': typeof AuthenticatedSystemClinicProfileRoute
   '/_authenticated/system/devices': typeof AuthenticatedSystemDevicesRoute
@@ -460,6 +470,7 @@ export interface FileRouteTypes {
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
+    | '/system/agent'
     | '/system/audit-logs'
     | '/system/clinic-profile'
     | '/system/devices'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/reports/attendance'
     | '/reports/export'
     | '/staff/profiles'
+    | '/system/agent'
     | '/system/audit-logs'
     | '/system/clinic-profile'
     | '/system/devices'
@@ -547,6 +559,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports/attendance'
     | '/_authenticated/reports/export'
     | '/_authenticated/staff/profiles'
+    | '/_authenticated/system/agent'
     | '/_authenticated/system/audit-logs'
     | '/_authenticated/system/clinic-profile'
     | '/_authenticated/system/devices'
@@ -810,6 +823,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffProfilesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/system/agent': {
+      id: '/_authenticated/system/agent'
+      path: '/system/agent'
+      fullPath: '/system/agent'
+      preLoaderRoute: typeof AuthenticatedSystemAgentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/system/audit-logs': {
       id: '/_authenticated/system/audit-logs'
       path: '/system/audit-logs'
@@ -911,6 +931,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReportsAttendanceRoute: typeof AuthenticatedReportsAttendanceRoute
   AuthenticatedReportsExportRoute: typeof AuthenticatedReportsExportRoute
   AuthenticatedStaffProfilesRoute: typeof AuthenticatedStaffProfilesRoute
+  AuthenticatedSystemAgentRoute: typeof AuthenticatedSystemAgentRoute
   AuthenticatedSystemAuditLogsRoute: typeof AuthenticatedSystemAuditLogsRoute
   AuthenticatedSystemClinicProfileRoute: typeof AuthenticatedSystemClinicProfileRoute
   AuthenticatedSystemDevicesRoute: typeof AuthenticatedSystemDevicesRoute
@@ -951,6 +972,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReportsAttendanceRoute: AuthenticatedReportsAttendanceRoute,
   AuthenticatedReportsExportRoute: AuthenticatedReportsExportRoute,
   AuthenticatedStaffProfilesRoute: AuthenticatedStaffProfilesRoute,
+  AuthenticatedSystemAgentRoute: AuthenticatedSystemAgentRoute,
   AuthenticatedSystemAuditLogsRoute: AuthenticatedSystemAuditLogsRoute,
   AuthenticatedSystemClinicProfileRoute: AuthenticatedSystemClinicProfileRoute,
   AuthenticatedSystemDevicesRoute: AuthenticatedSystemDevicesRoute,
