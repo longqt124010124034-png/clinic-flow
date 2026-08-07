@@ -55,12 +55,12 @@ export const Route = createFileRoute("/_authenticated/attendance/daily")({
 type AttendanceRecord = {
   id: string;
   employee_id: string;
-  date: string;
+  work_date: string;
   check_in_time: string | null;
   check_out_time: string | null;
-  status: "present" | "absent" | "late" | "early_leave" | "half_day";
-  duration_minutes: number | null;
-  notes: string | null;
+  attendance_status: "present" | "absent" | "late" | "early_leave" | "half_day";
+  worked_minutes: number | null;
+  approval_notes: string | null;
   employee: {
     full_name: string;
     employee_code: string;
@@ -77,7 +77,7 @@ const STATUS_LABELS: Record<string, { label: string; color: string }> = {
 
 function AttendanceDailyPage() {
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0],
+    new Date().toISOString().split("T")[0] ?? "",
   );
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -88,9 +88,9 @@ function AttendanceDailyPage() {
       const { data, error } = await supabase
         .from("attendance_records")
         .select(
-          "id, employee_id, date, check_in_time, check_out_time, status, duration_minutes, notes, employee:employees(full_name, employee_code)",
+          "id, employee_id, work_date, check_in_time, check_out_time, attendance_status, worked_minutes, approval_notes, employee:employees(full_name, employee_code)",
         )
-        .eq("date", selectedDate)
+        .eq("work_date", selectedDate)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -103,17 +103,17 @@ function AttendanceDailyPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("attendance_records")
-        .select("status", { count: "exact" })
-        .eq("date", selectedDate);
+        .select("attendance_status", { count: "exact" })
+        .eq("work_date", selectedDate);
 
       if (error) throw error;
 
-      const records = (data as Array<{ status: string }>) || [];
+      const records = data || [];
       const counts = {
-        present: records.filter((r) => r.status === "present").length,
-        absent: records.filter((r) => r.status === "absent").length,
-        late: records.filter((r) => r.status === "late").length,
-        early_leave: records.filter((r) => r.status === "early_leave").length,
+        present: records.filter((r) => r.attendance_status === "present").length,
+        absent: records.filter((r) => r.attendance_status === "absent").length,
+        late: records.filter((r) => r.attendance_status === "late").length,
+        early_leave: records.filter((r) => r.attendance_status === "early_leave").length,
       };
 
       return {
@@ -129,7 +129,7 @@ function AttendanceDailyPage() {
       !term ||
       record.employee.full_name.toLowerCase().includes(term) ||
       record.employee.employee_code.toLowerCase().includes(term);
-    const matchesStatus = !statusFilter || record.status === statusFilter;
+    const matchesStatus = !statusFilter || record.attendance_status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -146,6 +146,7 @@ function AttendanceDailyPage() {
     if (!checkIn || !checkOut) return "—";
     const [inH, inM] = checkIn.split(":").map(Number);
     const [outH, outM] = checkOut.split(":").map(Number);
+    if (inH === undefined || inM === undefined || outH === undefined || outM === undefined) return "—";
     const diff = (outH - inH) * 60 + (outM - inM);
     const hours = Math.floor(diff / 60);
     const minutes = diff % 60;
@@ -284,12 +285,12 @@ function AttendanceDailyPage() {
                     {calculateDuration(record.check_in_time, record.check_out_time)}
                   </TableCell>
                   <TableCell>
-                    <Badge className={STATUS_LABELS[record.status]?.color}>
-                      {STATUS_LABELS[record.status]?.label || record.status}
+                    <Badge className={STATUS_LABELS[record.attendance_status]?.color}>
+                      {STATUS_LABELS[record.attendance_status]?.label || record.attendance_status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {record.notes || "—"}
+                    {record.approval_notes || "—"}
                   </TableCell>
                 </TableRow>
               ))}

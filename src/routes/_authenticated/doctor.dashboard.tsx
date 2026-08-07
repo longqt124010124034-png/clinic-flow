@@ -48,8 +48,10 @@ function DoctorDashboard() {
     queryKey: ["doctor-stats", employeeId],
     enabled: Boolean(employeeId),
     queryFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
-      const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0] ?? "";
+      const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] ?? "";
+
+      if (!employeeId) throw new Error("Missing employee id");
 
       const [
         appointmentsToday,
@@ -82,7 +84,7 @@ function DoctorDashboard() {
           .eq("employee_id", employeeId)
           .gte(
             "work_date",
-            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0] ?? ""
           ),
         supabase
           .from("salary_config")
@@ -91,7 +93,7 @@ function DoctorDashboard() {
           .maybeSingle(),
       ]);
 
-      const lateCount = (attendanceStats.data || []).filter((r) => r.late_minutes > 15).length;
+      const lateCount = (attendanceStats.data || []).filter((r) => (r.late_minutes ?? 0) > 15).length;
       const totalAttendance = (attendanceStats.data || []).length;
       const workFrequency = totalAttendance > 0 ? ((totalAttendance - lateCount) / totalAttendance) * 100 : 0;
 

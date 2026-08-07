@@ -63,7 +63,7 @@ interface Appointment {
 function AppointmentBookingPage() {
   const { session } = useAuthSession();
   const profileQuery = useSessionProfile(session?.user.id);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0] ?? "");
   const [selectedPatient, setSelectedPatient] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -165,7 +165,7 @@ function AppointmentBookingPage() {
 
       const duration =
         servicesQuery.data?.find((s) => s.id === selectedService)?.default_duration_minutes || 30;
-      const [hours, minutes] = time.split(":").map(Number);
+      const [hours = 0, minutes = 0] = time.split(":").map(Number);
       const endMinutes = hours * 60 + minutes + duration;
       const endTime = `${String(Math.floor(endMinutes / 60) % 24).padStart(2, "0")}:${String(endMinutes % 60).padStart(2, "0")}`;
 
@@ -238,7 +238,7 @@ function AppointmentBookingPage() {
     servicesQuery.error ||
     appointmentsQuery.error
   ) {
-    return <ErrorState error="Lỗi tải dữ liệu" />;
+    return <ErrorState description="Lỗi tải dữ liệu" />;
   }
 
   const appointments = appointmentsQuery.data || [];
@@ -249,7 +249,6 @@ function AppointmentBookingPage() {
       <PageHeader
         title="Đặt hẹn khám bệnh nhân"
         description="Lên lịch khám, gửi nhắc nhở và theo dõi cuộc hẹn"
-        icon={Calendar}
       />
 
       <div className="grid gap-6 lg:grid-cols-3">

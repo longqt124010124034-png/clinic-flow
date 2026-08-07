@@ -101,7 +101,10 @@ function SalaryManagementPage() {
         .is("deleted_at", null);
 
       if (filterStatus !== "all") {
-        query = query.eq("employment_status", filterStatus);
+        query = query.eq(
+          "employment_status",
+          filterStatus as "active" | "on_leave" | "probation" | "suspended" | "terminated",
+        );
       }
 
       const { data: employees, error } = await query.order("full_name");
@@ -124,6 +127,13 @@ function SalaryManagementPage() {
         is_active: emp.employment_status === "active",
         employment_status: emp.employment_status,
         last_updated: new Date().toLocaleDateString("vi-VN"),
+        total_salary:
+          (emp.salary_config?.[0]?.base_salary || 0) +
+          (emp.salary_config?.[0]?.allowance || 0) +
+          (emp.salary_config?.[0]?.bonus || 0) -
+          (emp.salary_config?.[0]?.late_deduction || 0) -
+          (emp.salary_config?.[0]?.absence_deduction || 0) -
+          (emp.salary_config?.[0]?.insurance_deduction || 0),
       }));
     },
   });

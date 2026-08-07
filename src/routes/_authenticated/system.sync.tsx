@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthSession, useSessionProfile } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/_authenticated/system/sync")({
   head: () => ({
@@ -58,6 +59,8 @@ const EMPTY_FORM: DeviceConfigForm = {
 
 function SystemSyncPage() {
   const queryClient = useQueryClient();
+  const { session } = useAuthSession();
+  const profileQuery = useSessionProfile(session?.user.id);
   const [form, setForm] = useState<DeviceConfigForm>(EMPTY_FORM);
 
   const configQuery = useQuery({
@@ -125,7 +128,11 @@ function SystemSyncPage() {
           .eq("id", configQuery.data.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("device_configs").insert(payload);
+        const organizationId = profileQuery.data?.organizationId;
+        if (!organizationId) throw new Error("Không xác định được phòng khám của tài khoản hiện tại");
+        const { error } = await supabase
+          .from("device_configs")
+          .insert([{ ...payload, organization_id: organizationId }]);
         if (error) throw error;
       }
     },

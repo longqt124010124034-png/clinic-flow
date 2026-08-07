@@ -137,7 +137,7 @@ function BiometricDevicesPage() {
           device_type: formData.device_type,
           serial_number: formData.serial_number,
           location: formData.location,
-          ip_address: formData.ip_address,
+          ip_address: formData.ip_address ?? null,
           is_active: true,
         },
       ]);

@@ -58,7 +58,6 @@ type ManualCheckIn = {
   check_in_time: string | null;
   check_out_time: string | null;
   reason: string | null;
-  approved_by: string | null;
   employee: {
     full_name: string;
     employee_code: string;
@@ -75,7 +74,7 @@ type NewCheckIn = {
 
 function ManualAttendancePage() {
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0] ?? ""
   );
   const [search, setSearch] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -111,7 +110,15 @@ function ManualAttendancePage() {
         .eq("work_date", selectedDate)
         .order("created_at", { ascending: false });
 
-      return (data as unknown as ManualCheckIn[]) || [];
+      return ((data ?? []).map((r) => ({
+        id: r.id,
+        employee_id: r.employee_id,
+        work_date: r.work_date,
+        check_in_time: r.check_in_time,
+        check_out_time: r.check_out_time,
+        reason: r.approval_notes,
+        employee: r.employee,
+      })) as unknown as ManualCheckIn[]);
     },
   });
 
@@ -131,6 +138,7 @@ function ManualAttendancePage() {
 
       const { error } = await supabase.from("attendance_records").insert([
         {
+          organization_id: "org_default",
           employee_id: formData.employee_id,
           work_date: formData.work_date,
           check_in_time: `${formData.work_date}T${formData.check_in_time}:00`,

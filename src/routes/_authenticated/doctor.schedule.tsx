@@ -45,12 +45,13 @@ function DoctorSchedule() {
   const { session } = useAuthSession();
   const employeeQuery = useCurrentEmployee(session?.user.id);
   const employeeId = employeeQuery.data?.id;
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0] ?? "");
 
   const appointmentsQuery = useQuery({
     queryKey: ["doctor-appointments", employeeId, selectedDate],
     enabled: Boolean(employeeId),
     queryFn: async () => {
+      if (!employeeId) throw new Error("Missing employee id");
       const { data, error } = await supabase
         .from("appointments")
         .select(
@@ -85,17 +86,17 @@ function DoctorSchedule() {
   const handlePrevDay = () => {
     const date = new Date(selectedDate);
     date.setDate(date.getDate() - 1);
-    setSelectedDate(date.toISOString().split("T")[0]);
+    setSelectedDate(date.toISOString().split("T")[0] ?? "");
   };
 
   const handleNextDay = () => {
     const date = new Date(selectedDate);
     date.setDate(date.getDate() + 1);
-    setSelectedDate(date.toISOString().split("T")[0]);
+    setSelectedDate(date.toISOString().split("T")[0] ?? "");
   };
 
   const handleToday = () => {
-    setSelectedDate(new Date().toISOString().split("T")[0]);
+    setSelectedDate(new Date().toISOString().split("T")[0] ?? "");
   };
 
   if (employeeQuery.isLoading || appointmentsQuery.isLoading) {

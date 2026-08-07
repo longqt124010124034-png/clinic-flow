@@ -73,7 +73,7 @@ function SystemSettingsPage() {
       } catch {
         // keep as plain string if it isn't valid JSON
       }
-      const { error } = await supabase.from("app_settings").update({ value: parsed }).eq("id", id);
+      const { error } = await supabase.from("app_settings").update({ value: parsed as any }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -101,7 +101,7 @@ function SystemSettingsPage() {
         organization_id: organizationId,
         group_key: newSetting.group_key.trim(),
         setting_key: newSetting.setting_key.trim(),
-        value: parsed,
+        value: parsed as any,
       });
       if (error) throw error;
     },

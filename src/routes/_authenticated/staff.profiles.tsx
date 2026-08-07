@@ -95,21 +95,23 @@ function StaffProfilesPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
-        .select("doctor_id, status");
+        .select("assigned_dentist_id, status");
       if (error) throw error;
 
       const stats: Record<string, any> = {};
       (data || []).forEach((apt) => {
-        if (!stats[apt.doctor_id]) {
-          stats[apt.doctor_id] = {
+        const doctorId = apt.assigned_dentist_id;
+        if (!doctorId) return;
+        if (!stats[doctorId]) {
+          stats[doctorId] = {
             total: 0,
             completed: 0,
             cancelled: 0,
           };
         }
-        stats[apt.doctor_id].total++;
-        if (apt.status === "completed") stats[apt.doctor_id].completed++;
-        if (apt.status === "cancelled") stats[apt.doctor_id].cancelled++;
+        stats[doctorId].total++;
+        if (apt.status === "completed") stats[doctorId].completed++;
+        if (apt.status === "cancelled") stats[doctorId].cancelled++;
       });
 
       return stats;
@@ -135,7 +137,7 @@ function StaffProfilesPage() {
   }
 
   if (staffQuery.error || appointmentsStats.error) {
-    return <ErrorState error="Lỗi tải dữ liệu nhân viên" />;
+    return <ErrorState description="Lỗi tải dữ liệu nhân viên" />;
   }
 
   const staffList = staffQuery.data || [];
@@ -157,7 +159,6 @@ function StaffProfilesPage() {
       <PageHeader
         title="Hồ sơ nhân viên"
         description="Xem và quản lý thông tin bác sĩ, nhân viên và hiệu suất làm việc"
-        icon={Users}
       />
 
       <div className="grid gap-6 lg:grid-cols-3">

@@ -98,7 +98,7 @@ const STATUS_CONFIG: Record<
 
 function AppointmentsCalendarPage() {
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0],
+    new Date().toISOString().split("T")[0] ?? "",
   );
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
