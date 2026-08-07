@@ -1,250 +1,222 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect, useRef } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import {
-  Fingerprint,
-  Smartphone,
-  LogIn,
-  LogOut,
-  CheckCircle2,
   AlertCircle,
-  Clock,
-  User,
-  Camera,
+  CheckCircle2,
+  Fingerprint,
+  LogIn,
   Loader,
+  Radio,
+  ScanFace,
+  Smartphone,
+  User,
 } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-state";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuthSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/_authenticated/attendance/checkin")({
   head: () => ({
     meta: [
-      { title: "Chấm công thực tế - Việt Smile Clinic Suite" },
+      { title: "Chấm công thực tế — Việt Smile Clinic Suite" },
       {
         name: "description",
-        content: "Thực hiện chấm công bằng vân tay, khuôn mặt hoặc thủ công.",
+        content:
+          "Theo dõi chấm công vân tay từ máy chấm công theo thời gian thực và chấm công dự phòng khi thiết bị lỗi.",
+      },
+      { property: "og:title", content: "Chấm công thực tế — Việt Smile Clinic Suite" },
+      {
+        property: "og:description",
+        content: "Dữ liệu chấm công vân tay realtime từ máy chấm công của phòng khám.",
       },
     ],
   }),
-  component: AttendanceCheckInPage,
+  component: AttendanceCheckInPage;
 });
 
-type BiometricMethod = "fingerprint" | "face" | "manual";
-
-type CheckInRecord = {
-  id: string;
-  employee_id: string;
-  timestamp: string;
-  method: BiometricMethod;
-  device_id: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  checked_by_user_id: string | null;
-  employee: {
-    full_name: string;
-    employee_code: string;
-    avatar_url: string | null;
-  };
+const VERIFY_LABELS: Record<string, string> = {
+  fingerprint: "Vân tay",
+  face: "Khuôn mặt",
+  card: "Thẻ từ",
+  password: "Mật khẩu",
+  palm: "Vân bàn tay",
+  unknown: "Không xác định",
 };
 
+function todayISO() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 function AttendanceCheckInPage() {
-  const [activeMethod, setActiveMethod] = useState<BiometricMethod>("fingerprint");
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanResult, setScanResult] = useState<{ success: boolean; message: string } | null>(null);
-  const [currentEmployee, setCurrentEmployee] = useState<any>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const queryClient = useQueryClient();
+  const { session } = useAuthSession();
 
-  // Get current user's employee record
   const { data: myEmployee } = useQuery({
-    queryKey: ["current-employee"],
+    queryKey: ["checkin-employee", session?.user.id],
+    enabled: Boolean(session?.user.id),
     queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user?.email) return null;
-
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("employees")
-        .select("id, full_name, employee_code, avatar_url, organization_id, department:departments(name)")
-        .eq("email", userData.user.email)
-        .single();
-
-      return data;
-    },
-  });
-
-  // Get today's check-ins for current employee
-  const { data: todayCheckIns } = useQuery({
-    queryKey: ["today-checkins", myEmployee?.id],
-    queryFn: async () => {
-      if (!myEmployee?.id) return null;
-
-      const today = new Date().toISOString().split("T")[0] ?? "";
-      const { data } = await supabase
-        .from("attendance_records")
         .select(
-          "id, check_in_time, check_out_time, attendance_status, worked_minutes"
+          "id, full_name, employee_code, avatar_url, organization_id, device_user_id, department:departments(name)",
         )
-        .eq("employee_id", myEmployee.id)
-        .eq("work_date", today)
+        .or(`user_id.eq.${session?.user.id},email.eq.${session?.user.email ?? ""}`)
         .maybeSingle();
-
+      if (error) throw error;
       return data;
     },
-    enabled: !!myEmployee?.id,
-    refetchInterval: 5000, // Real-time refresh every 5 seconds
   });
 
-  const checkInMutation = useMutation({
-    mutationFn: async () => {
-      if (!myEmployee?.id) throw new Error("Không tìm thấy hồ sơ nhân viên");
+  const employeeId = myEmployee?.id;
 
-      const today = new Date().toISOString().split("T")[0] ?? "";
-      const now = new Date();
-
-      // Check if already checked in today
-      const { data: existingRecord } = await supabase
+  const todayRecord = useQuery({
+    queryKey: ["today-attendance", employeeId],
+    enabled: Boolean(employeeId),
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from("attendance_records")
-        .select("*")
-        .eq("employee_id", myEmployee.id)
-        .eq("work_date", today)
+        .select("id, check_in_time, check_out_time, attendance_status, worked_minutes")
+        .eq("employee_id", employeeId as string)
+        .eq("work_date", todayISO())
         .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
 
-      if (existingRecord?.check_in_time && !existingRecord?.check_out_time) {
-        throw new Error("Đã chấm công vào hôm nay");
+  const deviceFeed = useQuery({
+    queryKey: ["device-feed"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("device_logs")
+        .select("id, event_time, event_type, verify_mode, device_user_id, user_id, process_note")
+        .order("event_time", { ascending: false })
+        .limit(12);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const devices = useQuery({
+    queryKey: ["checkin-devices"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("devices")
+        .select("id, device_name, device_type, status, is_active, last_sync_time")
+        .eq("is_active", true);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  // Realtime: cập nhật ngay khi máy chấm công đẩy dữ liệu lên
+  useEffect(() => {
+    const channel = supabase
+      .channel("attendance-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "device_logs" },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["device-feed"] });
+          void queryClient.invalidateQueries({ queryKey: ["checkin-devices"] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "attendance_records" },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["today-attendance"] });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  const manualMutation = useMutation({
+    mutationFn: async () => {
+      if (!myEmployee?.id) throw new Error("Tài khoản chưa được liên kết với hồ sơ nhân viên");
+
+      const now = new Date().toISOString();
+      const date = todayISO();
+      const existing = todayRecord.data;
+
+      if (!existing) {
+        const { error } = await supabase.from("attendance_records").insert({
+          organization_id: myEmployee.organization_id,
+          employee_id: myEmployee.id,
+          work_date: date,
+          check_in_time: now,
+          attendance_status: "present",
+        });
+        if (error) throw error;
+        return "Đã ghi nhận giờ vào";
       }
 
-      // Get geolocation if available
-      let latitude: number | null = null;
-      let longitude: number | null = null;
-
-      if (navigator.geolocation) {
-        try {
-          const position = await new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              timeout: 5000,
-            });
-          });
-          latitude = (position as GeolocationPosition).coords.latitude;
-          longitude = (position as GeolocationPosition).coords.longitude;
-        } catch (err) {
-          console.log("[v0] Geolocation not available:", err);
-        }
-      }
-
-      // Create or update attendance record
-      if (existingRecord) {
+      if (!existing.check_in_time) {
         const { error } = await supabase
           .from("attendance_records")
-          .update({
-            check_out_time: now.toISOString(),
-            attendance_status: "present",
-            updated_at: now.toISOString(),
-          })
-          .eq("id", existingRecord.id);
-
+          .update({ check_in_time: now, attendance_status: "present" })
+          .eq("id", existing.id);
         if (error) throw error;
-
-        return { type: "checkout", message: "Chấm công ra thành công!" };
-      } else {
-        const { error } = await supabase.from("attendance_records").insert([
-          {
-            employee_id: myEmployee.id,
-            organization_id: myEmployee.organization_id,
-            work_date: today,
-            check_in_time: now.toISOString(),
-            attendance_status: "present",
-            created_at: now.toISOString(),
-            updated_at: now.toISOString(),
-          },
-        ]);
-
-        if (error) throw error;
-
-        return { type: "checkin", message: "Chấm công vào thành công!" };
+        return "Đã ghi nhận giờ vào";
       }
+
+      const worked = Math.round(
+        (Date.parse(now) - Date.parse(existing.check_in_time)) / 60000,
+      );
+      const { error } = await supabase
+        .from("attendance_records")
+        .update({ check_out_time: now, worked_minutes: worked > 0 ? worked : 0 })
+        .eq("id", existing.id);
+      if (error) throw error;
+      return "Đã ghi nhận giờ ra";
     },
-    onSuccess: (result) => {
-      setScanResult({ success: true, message: result.message });
-      queryClient.invalidateQueries({ queryKey: ["today-checkins"] });
-      setTimeout(() => setScanResult(null), 3000);
+    onSuccess: (message) => {
+      toast.success(message);
+      void queryClient.invalidateQueries({ queryKey: ["today-attendance"] });
     },
-    onError: (error) => {
-      setScanResult({
-        success: false,
-        message: (error as Error).message || "Lỗi chấm công",
-      });
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
-  const handleFingerprintScan = async () => {
-    setIsScanning(true);
-    try {
-      // Simulate fingerprint scan - in production, integrate with actual biometric devices
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      if (Math.random() > 0.1) {
-        // 90% success rate for demo
-        await checkInMutation.mutateAsync();
-      } else {
-        setScanResult({ success: false, message: "Vân tay không khớp, vui lòng thử lại" });
-      }
-    } catch (err) {
-      console.log("[v0] Fingerprint scan error:", err);
-    } finally {
-      setIsScanning(false);
-    }
-  };
-
-  const handleFaceScan = async () => {
-    setIsScanning(true);
-    try {
-      // Request camera access
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-      });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-
-        // Simulate face detection - in production, integrate with ML Kit or similar
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-
-        // Stop the stream
-        stream.getTracks().forEach((track) => track.stop());
-
-        if (Math.random() > 0.15) {
-          // 85% success rate for demo
-          await checkInMutation.mutateAsync();
-        } else {
-          setScanResult({ success: false, message: "Không nhận diện được khuôn mặt" });
-        }
-      }
-    } catch (err) {
-      setScanResult({
-        success: false,
-        message: "Không thể truy cập camera: " + (err as Error).message,
-      });
-      console.log("[v0] Face scan error:", err);
-    } finally {
-      setIsScanning(false);
-    }
-  };
+  const record = todayRecord.data;
+  const onlineDevices = (devices.data ?? []).filter((d) => d.status === "online").length;
 
   return (
     <div>
       <PageHeader
         title="Chấm công thực tế"
-        description="Sử dụng vân tay, khuôn mặt hoặc chấm công thủ công để ghi nhận có mặt."
+        description="Dữ liệu vân tay được máy chấm công đẩy lên hệ thống theo thời gian thực. Chấm công thủ công chỉ dùng khi thiết bị gặp sự cố và sẽ được ghi nhận riêng."
       />
 
-      {/* Current Status Card */}
+      {!myEmployee && (
+        <Card className="surface-card mb-6 border-l-4 border-l-yellow-500 p-4">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="size-5 text-yellow-600" />
+            <p className="text-sm text-yellow-800">
+              Tài khoản của bạn chưa được liên kết với hồ sơ nhân viên. Vui lòng liên hệ quản trị
+              viên để gán mã nhân viên và mã vân tay trên máy chấm công.
+            </p>
+          </div>
+        </Card>
+      )}
+
       {myEmployee && (
         <Card className="surface-card mb-6 p-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               {myEmployee.avatar_url ? (
                 <img
@@ -260,199 +232,136 @@ function AttendanceCheckInPage() {
               <div>
                 <h3 className="text-lg font-semibold">{myEmployee.full_name}</h3>
                 <p className="text-sm text-muted-foreground">{myEmployee.employee_code}</p>
-                {myEmployee.department && (
-                  <p className="text-sm text-muted-foreground">{myEmployee.department.name}</p>
-                )}
-              </div>
-            </div>
-
-            {todayCheckIns && (
-              <div className="text-right">
-                {todayCheckIns.check_in_time && todayCheckIns.check_out_time ? (
-                  <div>
-                    <Badge className="mb-2 bg-green-100 text-green-800">Đã hoàn thành</Badge>
-                    <p className="text-sm text-muted-foreground">
-                      Vào: {new Date(todayCheckIns.check_in_time).toLocaleTimeString("vi-VN")}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Ra: {new Date(todayCheckIns.check_out_time).toLocaleTimeString("vi-VN")}
-                    </p>
-                  </div>
-                ) : todayCheckIns.check_in_time ? (
-                  <div>
-                    <Badge className="mb-2 bg-blue-100 text-blue-800">Đã vào</Badge>
-                    <p className="text-sm text-muted-foreground">
-                      Vào: {new Date(todayCheckIns.check_in_time).toLocaleTimeString("vi-VN")}
-                    </p>
-                  </div>
-                ) : (
-                  <Badge className="mb-2 bg-yellow-100 text-yellow-800">Chưa chấm công</Badge>
-                )}
-              </div>
-            )}
-          </div>
-        </Card>
-      )}
-
-      {/* Scan Result */}
-      {scanResult && (
-        <Card
-          className={`surface-card mb-6 p-4 border-l-4 ${
-            scanResult.success
-              ? "border-l-green-500 bg-green-50"
-              : "border-l-red-500 bg-red-50"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            {scanResult.success ? (
-              <CheckCircle2 className="size-5 text-green-600" />
-            ) : (
-              <AlertCircle className="size-5 text-red-600" />
-            )}
-            <div>
-              <p className={scanResult.success ? "text-green-800" : "text-red-800"}>
-                {scanResult.message}
-              </p>
-              {scanResult.success && (
-                <p className="text-xs text-green-700">
-                  Lúc: {new Date().toLocaleTimeString("vi-VN")}
+                <p className="text-sm text-muted-foreground">
+                  {myEmployee.department?.name ?? "Chưa gán phòng ban"} · Mã trên máy:{" "}
+                  {myEmployee.device_user_id ?? "chưa ánh xạ"}
                 </p>
-              )}
+              </div>
             </div>
-          </div>
-        </Card>
-      )}
 
-      {/* Method Selector */}
-      <div className="mb-8 grid gap-4 md:grid-cols-3">
-        {/* Fingerprint Method */}
-        <Card
-          className={`surface-card cursor-pointer p-6 transition-all ${
-            activeMethod === "fingerprint"
-              ? "border-2 border-primary bg-primary/5"
-              : "border border-border hover:border-primary/50"
-          }`}
-          onClick={() => setActiveMethod("fingerprint")}
-        >
-          <div className="mb-4 flex size-14 items-center justify-center rounded-lg bg-blue-100">
-            <Fingerprint className="size-7 text-blue-600" />
-          </div>
-          <h3 className="font-semibold">Vân tay</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Quét vân tay trên máy chấm công
-          </p>
-
-          {activeMethod === "fingerprint" && (
-            <Button
-              onClick={() => handleFingerprintScan()}
-              disabled={isScanning || checkInMutation.isPending}
-              className="mt-4 w-full"
-            >
-              {isScanning || checkInMutation.isPending ? (
+            <div className="text-right">
+              {record?.check_in_time && record?.check_out_time ? (
                 <>
-                  <Loader className="mr-2 size-4 animate-spin" />
-                  Đang quét...
+                  <Badge className="mb-2 bg-green-100 text-green-800">Đã hoàn thành</Badge>
+                  <p className="text-sm text-muted-foreground">
+                    Vào: {new Date(record.check_in_time).toLocaleTimeString("vi-VN")}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Ra: {new Date(record.check_out_time).toLocaleTimeString("vi-VN")}
+                  </p>
+                </>
+              ) : record?.check_in_time ? (
+                <>
+                  <Badge className="mb-2 bg-blue-100 text-blue-800">Đang làm việc</Badge>
+                  <p className="text-sm text-muted-foreground">
+                    Vào: {new Date(record.check_in_time).toLocaleTimeString("vi-VN")}
+                  </p>
                 </>
               ) : (
-                <>
-                  <Fingerprint className="mr-2 size-4" />
-                  Quét vân tay
-                </>
+                <Badge className="bg-yellow-100 text-yellow-800">Chưa chấm công hôm nay</Badge>
               )}
-            </Button>
-          )}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      <div className="mb-6 grid gap-4 md:grid-cols-3">
+        <Card className="surface-card p-6">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-blue-100">
+            <Fingerprint className="size-6 text-blue-600" />
+          </div>
+          <h3 className="font-semibold">Vân tay trên máy chấm công</h3>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Quét vân tay trực tiếp trên thiết bị. Bản ghi được Agent đẩy lên và hiển thị tại đây
+            trong vài giây. Hệ thống không mô phỏng vân tay.
+          </p>
+          <div className="mt-4 flex items-center gap-2 text-sm">
+            <Radio
+              className={`size-4 ${onlineDevices > 0 ? "text-green-600" : "text-muted-foreground"}`}
+            />
+            <span className={onlineDevices > 0 ? "text-green-700" : "text-muted-foreground"}>
+              {onlineDevices > 0
+                ? `${onlineDevices} thiết bị đang kết nối`
+                : "Chưa có thiết bị nào gửi dữ liệu"}
+            </span>
+          </div>
         </Card>
 
-        {/* Face Recognition Method */}
-        <Card
-          className={`surface-card cursor-pointer p-6 transition-all ${
-            activeMethod === "face"
-              ? "border-2 border-primary bg-primary/5"
-              : "border border-border hover:border-primary/50"
-          }`}
-          onClick={() => setActiveMethod("face")}
-        >
-          <div className="mb-4 flex size-14 items-center justify-center rounded-lg bg-purple-100">
-            <Camera className="size-7 text-purple-600" />
+        <Card className="surface-card p-6">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-purple-100">
+            <ScanFace className="size-6 text-purple-600" />
           </div>
           <h3 className="font-semibold">Khuôn mặt</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Nhận diện khuôn mặt qua camera
+            Nếu thiết bị hỗ trợ nhận diện khuôn mặt, bản ghi sẽ được gửi kèm chế độ xác thực
+            “Khuôn mặt”. Trình duyệt không thực hiện nhận diện thay thiết bị.
           </p>
-
-          {activeMethod === "face" && (
-            <>
-              <video
-                ref={videoRef}
-                autoPlay
-                className="mt-4 w-full rounded-lg bg-black"
-                style={{ maxHeight: "200px" }}
-              />
-              <Button
-                onClick={() => handleFaceScan()}
-                disabled={isScanning || checkInMutation.isPending}
-                className="mt-4 w-full"
-              >
-                {isScanning || checkInMutation.isPending ? (
-                  <>
-                    <Loader className="mr-2 size-4 animate-spin" />
-                    Đang quét...
-                  </>
-                ) : (
-                  <>
-                    <Camera className="mr-2 size-4" />
-                    Quét khuôn mặt
-                  </>
-                )}
-              </Button>
-            </>
-          )}
         </Card>
 
-        {/* Manual Method */}
-        <Card
-          className={`surface-card cursor-pointer p-6 transition-all ${
-            activeMethod === "manual"
-              ? "border-2 border-primary bg-primary/5"
-              : "border border-border hover:border-primary/50"
-          }`}
-          onClick={() => setActiveMethod("manual")}
-        >
-          <div className="mb-4 flex size-14 items-center justify-center rounded-lg bg-green-100">
-            <Smartphone className="size-7 text-green-600" />
+        <Card className="surface-card p-6">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-green-100">
+            <Smartphone className="size-6 text-green-600" />
           </div>
-          <h3 className="font-semibold">Chấm công thủ công</h3>
+          <h3 className="font-semibold">Chấm công dự phòng</h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Nhấn nút để chấm công ngay
+            Chỉ dùng khi máy chấm công gặp sự cố. Mọi thao tác đều được lưu lại để quản lý đối
+            chiếu.
           </p>
-
-          {activeMethod === "manual" && (
-            <Button
-              onClick={() => checkInMutation.mutateAsync()}
-              disabled={isScanning || checkInMutation.isPending}
-              className="mt-4 w-full"
-            >
-              {checkInMutation.isPending ? (
-                <>
-                  <Loader className="mr-2 size-4 animate-spin" />
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  <LogIn className="mr-2 size-4" />
-                  Chấm công ngay
-                </>
-              )}
-            </Button>
-          )}
+          <Button
+            className="mt-4 w-full"
+            variant="outline"
+            disabled={!myEmployee || manualMutation.isPending}
+            onClick={() => manualMutation.mutate()}
+          >
+            {manualMutation.isPending ? (
+              <>
+                <Loader className="mr-2 size-4 animate-spin" /> Đang xử lý...
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 size-4" />
+                {record?.check_in_time ? "Ghi nhận giờ ra" : "Ghi nhận giờ vào"}
+              </>
+            )}
+          </Button>
         </Card>
       </div>
 
-      {/* Safety Warning */}
-      <Card className="surface-card border-l-4 border-l-yellow-500 bg-yellow-50 p-4">
-        <p className="text-sm text-yellow-800">
-          <strong>Lưu ý bảo mật:</strong> Chỉ sử dụng hệ thống chấm công của bạn để ghi nhận sự có mặt của chính mình. Cố gắng chấm công cho người khác bằng bất kỳ phương pháp nào sẽ bị ghi lại và có thể dẫn đến kỷ luật.
-        </p>
+      <Card className="surface-card p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-semibold">Dòng dữ liệu máy chấm công (realtime)</h3>
+          <Badge className="bg-primary/10 text-primary">Tự động cập nhật</Badge>
+        </div>
+
+        {(deviceFeed.data ?? []).length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Chưa có bản ghi nào từ máy chấm công. Hãy cấu hình Agent tại “Kết nối Agent chấm công”.
+          </p>
+        ) : (
+          <ul className="divide-y divide-border">
+            {(deviceFeed.data ?? []).map((log) => (
+              <li key={log.id} className="flex items-center justify-between gap-4 py-3">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2
+                    className={`size-4 ${log.user_id ? "text-green-600" : "text-yellow-600"}`}
+                  />
+                  <div>
+                    <p className="text-sm font-medium">
+                      Mã máy: {log.device_user_id ?? "—"} ·{" "}
+                      {VERIFY_LABELS[log.verify_mode] ?? log.verify_mode}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {log.user_id ? "Đã khớp nhân viên" : (log.process_note ?? "Chưa ánh xạ")}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {new Date(log.event_time).toLocaleString("vi-VN")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
     </div>
   );
