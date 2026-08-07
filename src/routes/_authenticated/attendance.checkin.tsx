@@ -37,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/attendance/checkin")({
       },
     ],
   }),
-  component: AttendanceCheckInPage;
+  component: AttendanceCheckInPage,
 });
 
 const VERIFY_LABELS: Record<string, string> = {
