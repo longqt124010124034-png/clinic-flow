@@ -140,6 +140,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { title: "Thiết bị nhận dạng", to: "/biometric/devices", icon: Fingerprint, roles: STAFF },
       { title: "Máy chấm công", to: "/system/devices", icon: Stethoscope, roles: ADMIN },
       { title: "Trạng thái đồng bộ", to: "/system/sync", icon: Radar, roles: ADMIN },
+      { title: "Kết nối Agent chấm công", to: "/system/agent", icon: Radar, roles: ADMIN },
       { title: "Hồ sơ phòng khám", to: "/system/clinic-profile", icon: Building2, roles: STAFF },
       { title: "Tài khoản người dùng", to: "/system/users", icon: UserCog, roles: ADMIN },
       { title: "Cài đặt hệ thống", to: "/system/settings", icon: Settings, roles: ADMIN },

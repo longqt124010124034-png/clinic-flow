@@ -20,6 +20,8 @@ export type SessionProfile = {
   avatarUrl: string | null;
   organizationId: string;
   roles: AppRole[];
+  approvalStatus: "pending" | "approved" | "rejected";
+  isActive: boolean;
 };
 
 /** Raw Supabase session, kept in sync with auth state changes. */
@@ -50,7 +52,7 @@ async function loadProfile(userId: string): Promise<SessionProfile> {
     await Promise.all([
       supabase
         .from("user_profiles")
-        .select("id, full_name, email, avatar_url, organization_id")
+        .select("id, full_name, email, avatar_url, organization_id, approval_status, is_active")
         .eq("id", userId)
         .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
@@ -67,6 +69,8 @@ async function loadProfile(userId: string): Promise<SessionProfile> {
     avatarUrl: profile.avatar_url,
     organizationId: profile.organization_id,
     roles: roleRows.map((row) => row.role as AppRole),
+    approvalStatus: (profile.approval_status as SessionProfile["approvalStatus"]) ?? "pending",
+    isActive: profile.is_active,
   };
 }
 
