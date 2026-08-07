@@ -52,6 +52,158 @@ export type Database = {
           },
         ]
       }
+      appointment_reminders: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          organization_id: string
+          reminder_type: string
+          send_hours_before: number
+          sent_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          organization_id: string
+          reminder_type: string
+          send_hours_before: number
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          organization_id?: string
+          reminder_type?: string
+          send_hours_before?: number
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_reminders_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_reminders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      appointments: {
+        Row: {
+          appointment_date: string
+          assigned_dentist_id: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          confirmation_status: string
+          created_at: string
+          deleted_at: string | null
+          duration_minutes: number | null
+          end_time: string
+          id: string
+          notes: string | null
+          organization_id: string
+          patient_id: string
+          reminder_sent: boolean
+          reminder_sent_at: string | null
+          service_id: string | null
+          start_time: string
+          status: string
+          treatment_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          assigned_dentist_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmation_status?: string
+          created_at?: string
+          deleted_at?: string | null
+          duration_minutes?: number | null
+          end_time: string
+          id?: string
+          notes?: string | null
+          organization_id: string
+          patient_id: string
+          reminder_sent?: boolean
+          reminder_sent_at?: string | null
+          service_id?: string | null
+          start_time: string
+          status?: string
+          treatment_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          assigned_dentist_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          confirmation_status?: string
+          created_at?: string
+          deleted_at?: string | null
+          duration_minutes?: number | null
+          end_time?: string
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          patient_id?: string
+          reminder_sent?: boolean
+          reminder_sent_at?: string | null
+          service_id?: string | null
+          start_time?: string
+          status?: string
+          treatment_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_assigned_dentist_id_fkey"
+            columns: ["assigned_dentist_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       attendance_adjustments: {
         Row: {
           adjusted_value: string | null
@@ -892,6 +1044,83 @@ export type Database = {
         }
         Relationships: []
       }
+      patients: {
+        Row: {
+          address: string | null
+          allergies: string | null
+          avatar_url: string | null
+          created_at: string
+          date_of_birth: string | null
+          deleted_at: string | null
+          email: string | null
+          first_visit_date: string | null
+          full_name: string
+          gender: string | null
+          id: string
+          insurance_number: string | null
+          insurance_provider: string | null
+          is_active: boolean
+          last_visit_date: string | null
+          medical_notes: string | null
+          organization_id: string
+          patient_code: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          allergies?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          first_visit_date?: string | null
+          full_name: string
+          gender?: string | null
+          id?: string
+          insurance_number?: string | null
+          insurance_provider?: string | null
+          is_active?: boolean
+          last_visit_date?: string | null
+          medical_notes?: string | null
+          organization_id: string
+          patient_code: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          allergies?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          deleted_at?: string | null
+          email?: string | null
+          first_visit_date?: string | null
+          full_name?: string
+          gender?: string | null
+          id?: string
+          insurance_number?: string | null
+          insurance_provider?: string | null
+          is_active?: boolean
+          last_visit_date?: string | null
+          medical_notes?: string | null
+          organization_id?: string
+          patient_code?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patients_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       positions: {
         Row: {
           can_receive_appointments: boolean
@@ -942,6 +1171,65 @@ export type Database = {
           },
           {
             foreignKeyName: "positions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          can_reserve_slot: boolean
+          category: string | null
+          code: string | null
+          created_at: string
+          default_duration_minutes: number
+          deleted_at: string | null
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          organization_id: string
+          requires_professional: boolean
+          updated_at: string
+        }
+        Insert: {
+          can_reserve_slot?: boolean
+          category?: string | null
+          code?: string | null
+          created_at?: string
+          default_duration_minutes?: number
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          organization_id: string
+          requires_professional?: boolean
+          updated_at?: string
+        }
+        Update: {
+          can_reserve_slot?: boolean
+          category?: string | null
+          code?: string | null
+          created_at?: string
+          default_duration_minutes?: number
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          organization_id?: string
+          requires_professional?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
