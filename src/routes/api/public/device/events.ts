@@ -161,7 +161,7 @@ export const Route = createFileRoute("/api/public/device/events")({
             mask_detected: event.mask_detected ?? null,
             processed: Boolean(employeeId),
             process_note: employeeId ? null : "Chưa ánh xạ nhân viên",
-            raw_data: event as unknown as Record<string, unknown>,
+            raw_data: JSON.parse(JSON.stringify(event)),
           });
 
           if (logError) {
@@ -212,31 +212,38 @@ export const Route = createFileRoute("/api/public/device/events")({
             ? new Date(record.check_out_time).getTime()
             : null;
 
-          const update: Record<string, unknown> = { attendance_status: "present" };
+          const update: {
+            attendance_status: string;
+            check_in_time?: string;
+            device_check_in_time?: string;
+            check_out_time?: string;
+            device_check_out_time?: string;
+            worked_minutes?: number;
+          } = { attendance_status: "present" };
 
           const treatAsCheckIn =
             event.event_type === "check_in" ||
             (event.event_type === "auto" && (currentIn === null || eventMs < currentIn));
 
           if (treatAsCheckIn && (currentIn === null || eventMs < currentIn)) {
-            update["check_in_time"] = event.event_time;
-            update["device_check_in_time"] = event.event_time;
+            update.check_in_time = event.event_time;
+            update.device_check_in_time = event.event_time;
           } else if (currentOut === null || eventMs > currentOut) {
-            update["check_out_time"] = event.event_time;
-            update["device_check_out_time"] = event.event_time;
+            update.check_out_time = event.event_time;
+            update.device_check_out_time = event.event_time;
           } else {
             skipped += 1;
             continue;
           }
 
           const finalIn = new Date(
-            (update["check_in_time"] as string) ?? record.check_in_time ?? event.event_time,
+            update.check_in_time ?? record.check_in_time ?? event.event_time,
           ).getTime();
-          const finalOut = update["check_out_time"]
-            ? new Date(update["check_out_time"] as string).getTime()
+          const finalOut = update.check_out_time
+            ? new Date(update.check_out_time).getTime()
             : currentOut;
           if (finalOut && finalOut > finalIn) {
-            update["worked_minutes"] = Math.round((finalOut - finalIn) / 60000);
+            update.worked_minutes = Math.round((finalOut - finalIn) / 60000);
           }
 
           const { error } = await supabaseAdmin

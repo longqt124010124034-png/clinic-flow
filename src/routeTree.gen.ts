@@ -50,6 +50,7 @@ import { Route as AuthenticatedSystemDevicesRouteImport } from './routes/_authen
 import { Route as AuthenticatedSystemSettingsRouteImport } from './routes/_authenticated/system.settings'
 import { Route as AuthenticatedSystemSyncRouteImport } from './routes/_authenticated/system.sync'
 import { Route as AuthenticatedSystemUsersRouteImport } from './routes/_authenticated/system.users'
+import { Route as ApiPublicDeviceEventsRouteImport } from './routes/api/public/device/events'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -285,6 +286,11 @@ const AuthenticatedSystemUsersRoute =
     path: '/system/users',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicDeviceEventsRoute = ApiPublicDeviceEventsRouteImport.update({
+  id: '/api/public/device/events',
+  path: '/api/public/device/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -327,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/system/settings': typeof AuthenticatedSystemSettingsRoute
   '/system/sync': typeof AuthenticatedSystemSyncRoute
   '/system/users': typeof AuthenticatedSystemUsersRoute
+  '/api/public/device/events': typeof ApiPublicDeviceEventsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/system/settings': typeof AuthenticatedSystemSettingsRoute
   '/system/sync': typeof AuthenticatedSystemSyncRoute
   '/system/users': typeof AuthenticatedSystemUsersRoute
+  '/api/public/device/events': typeof ApiPublicDeviceEventsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -413,6 +421,7 @@ export interface FileRoutesById {
   '/_authenticated/system/settings': typeof AuthenticatedSystemSettingsRoute
   '/_authenticated/system/sync': typeof AuthenticatedSystemSyncRoute
   '/_authenticated/system/users': typeof AuthenticatedSystemUsersRoute
+  '/api/public/device/events': typeof ApiPublicDeviceEventsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -457,6 +466,7 @@ export interface FileRouteTypes {
     | '/system/settings'
     | '/system/sync'
     | '/system/users'
+    | '/api/public/device/events'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/system/settings'
     | '/system/sync'
     | '/system/users'
+    | '/api/public/device/events'
   id:
     | '__root__'
     | '/'
@@ -542,12 +553,14 @@ export interface FileRouteTypes {
     | '/_authenticated/system/settings'
     | '/_authenticated/system/sync'
     | '/_authenticated/system/users'
+    | '/api/public/device/events'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicDeviceEventsRoute: typeof ApiPublicDeviceEventsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -839,6 +852,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSystemUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/device/events': {
+      id: '/api/public/device/events'
+      path: '/api/public/device/events'
+      fullPath: '/api/public/device/events'
+      preLoaderRoute: typeof ApiPublicDeviceEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -946,6 +966,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicDeviceEventsRoute: ApiPublicDeviceEventsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
