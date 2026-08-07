@@ -148,13 +148,31 @@ export const Route = createFileRoute("/api/public/device/events")({
 
         for (const event of payload.events) {
           const employeeId = employeeByDeviceUser.get(event.device_user_id) ?? null;
+          const date = workDate(event.event_time);
+
+          const { data: record } = employeeId
+            ? await supabaseAdmin
+                .from("attendance_records")
+                .select("id, check_in_time, check_out_time")
+                .eq("employee_id", employeeId)
+                .eq("work_date", date)
+                .maybeSingle()
+            : { data: null };
+
+          // Máy chấm công thường chỉ gửi "một lần quét"; suy ra vào/ra theo bản ghi trong ngày
+          const direction: "check_in" | "check_out" =
+            event.event_type !== "auto"
+              ? event.event_type
+              : record?.check_in_time
+                ? "check_out"
+                : "check_in";
 
           const { error: logError } = await supabaseAdmin.from("device_logs").insert({
             organization_id: orgId,
             device_id: deviceId,
             user_id: employeeId,
             device_user_id: event.device_user_id,
-            event_type: event.event_type,
+            event_type: direction,
             verify_mode: event.verify_mode,
             event_time: event.event_time,
             temperature: event.temperature ?? null,
@@ -171,6 +189,7 @@ export const Route = createFileRoute("/api/public/device/events")({
               continue;
             }
             failed += 1;
+            console.error("[device-ingest] log insert failed", logError);
             continue;
           }
 
@@ -180,18 +199,10 @@ export const Route = createFileRoute("/api/public/device/events")({
             continue;
           }
 
-          const date = workDate(event.event_time);
-          const { data: record } = await supabaseAdmin
-            .from("attendance_records")
-            .select("id, check_in_time, check_out_time")
-            .eq("employee_id", employeeId)
-            .eq("work_date", date)
-            .maybeSingle();
-
           const eventMs = new Date(event.event_time).getTime();
 
           if (!record) {
-            const isCheckOut = event.event_type === "check_out";
+            const isCheckOut = direction === "check_out";
             const { error } = await supabaseAdmin.from("attendance_records").insert({
               organization_id: orgId,
               employee_id: employeeId,
@@ -222,8 +233,7 @@ export const Route = createFileRoute("/api/public/device/events")({
           } = { attendance_status: "present" };
 
           const treatAsCheckIn =
-            event.event_type === "check_in" ||
-            (event.event_type === "auto" && (currentIn === null || eventMs < currentIn));
+            direction === "check_in" && (currentIn === null || eventMs < currentIn);
 
           if (treatAsCheckIn && (currentIn === null || eventMs < currentIn)) {
             update.check_in_time = event.event_time;
