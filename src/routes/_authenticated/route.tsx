@@ -1,9 +1,15 @@
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { Loader2 } from "lucide-react";
+import { Hourglass, Loader2, ShieldX } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { ErrorState, PermissionDenied } from "@/components/page-state";
-import { useAuthSession, useClinicProfile, useSessionProfile } from "@/hooks/use-session";
+import { Button } from "@/components/ui/button";
+import {
+  useAuthSession,
+  useClinicProfile,
+  useSessionProfile,
+  useSignOut,
+} from "@/hooks/use-session";
 import { hasAnyRole, routeRoles } from "@/lib/permissions";
 import { supabase } from "@/integrations/supabase/client";
 
