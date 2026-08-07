@@ -522,6 +522,181 @@ export type Database = {
           },
         ]
       }
+      device_configs: {
+        Row: {
+          auto_sync_enabled: boolean
+          connection_method: string
+          created_at: string
+          device_ip_address: string | null
+          device_password_encrypted: string | null
+          device_port: number | null
+          device_type: string
+          device_username: string | null
+          id: string
+          is_connected: boolean
+          last_sync_time: string | null
+          last_test_time: string | null
+          organization_id: string
+          sync_interval_minutes: number
+          test_result: string | null
+          updated_at: string
+        }
+        Insert: {
+          auto_sync_enabled?: boolean
+          connection_method?: string
+          created_at?: string
+          device_ip_address?: string | null
+          device_password_encrypted?: string | null
+          device_port?: number | null
+          device_type?: string
+          device_username?: string | null
+          id?: string
+          is_connected?: boolean
+          last_sync_time?: string | null
+          last_test_time?: string | null
+          organization_id: string
+          sync_interval_minutes?: number
+          test_result?: string | null
+          updated_at?: string
+        }
+        Update: {
+          auto_sync_enabled?: boolean
+          connection_method?: string
+          created_at?: string
+          device_ip_address?: string | null
+          device_password_encrypted?: string | null
+          device_port?: number | null
+          device_type?: string
+          device_username?: string | null
+          id?: string
+          is_connected?: boolean
+          last_sync_time?: string | null
+          last_test_time?: string | null
+          organization_id?: string
+          sync_interval_minutes?: number
+          test_result?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_configs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_sync_logs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          duration_seconds: number | null
+          error_message: string | null
+          id: string
+          organization_id: string
+          records_failed: number
+          records_found: number
+          records_imported: number
+          records_skipped: number
+          started_at: string
+          status: string
+          sync_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          id?: string
+          organization_id: string
+          records_failed?: number
+          records_found?: number
+          records_imported?: number
+          records_skipped?: number
+          started_at?: string
+          status: string
+          sync_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          duration_seconds?: number | null
+          error_message?: string | null
+          id?: string
+          organization_id?: string
+          records_failed?: number
+          records_found?: number
+          records_imported?: number
+          records_skipped?: number
+          started_at?: string
+          status?: string
+          sync_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_sync_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      device_sync_mappings: {
+        Row: {
+          created_at: string
+          device_user_id: string
+          employee_id: string | null
+          id: string
+          is_active: boolean
+          last_sync_time: string | null
+          organization_id: string
+          sync_error: string | null
+          sync_status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          device_user_id: string
+          employee_id?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_time?: string | null
+          organization_id: string
+          sync_error?: string | null
+          sync_status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          device_user_id?: string
+          employee_id?: string | null
+          id?: string
+          is_active?: boolean
+          last_sync_time?: string | null
+          organization_id?: string
+          sync_error?: string | null
+          sync_status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "device_sync_mappings_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "device_sync_mappings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employees: {
         Row: {
           address: string | null
