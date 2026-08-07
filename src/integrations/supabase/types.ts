@@ -52,6 +52,245 @@ export type Database = {
           },
         ]
       }
+      attendance_adjustments: {
+        Row: {
+          adjusted_value: string | null
+          adjustment_type: string
+          approved_by: string | null
+          attendance_id: string | null
+          created_at: string
+          deleted_at: string | null
+          employee_id: string
+          id: string
+          organization_id: string
+          reason: string
+          requested_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          adjusted_value?: string | null
+          adjustment_type: string
+          approved_by?: string | null
+          attendance_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          employee_id: string
+          id?: string
+          organization_id: string
+          reason: string
+          requested_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          adjusted_value?: string | null
+          adjustment_type?: string
+          approved_by?: string | null
+          attendance_id?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          employee_id?: string
+          id?: string
+          organization_id?: string
+          reason?: string
+          requested_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_adjustments_attendance_id_fkey"
+            columns: ["attendance_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_adjustments_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_adjustments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_records: {
+        Row: {
+          approval_notes: string | null
+          attendance_status: string
+          check_in_time: string | null
+          check_out_time: string | null
+          created_at: string
+          deleted_at: string | null
+          device_check_in_time: string | null
+          device_check_out_time: string | null
+          early_leave_minutes: number | null
+          employee_id: string
+          id: string
+          is_approved: boolean
+          late_minutes: number | null
+          organization_id: string
+          overtime_minutes: number | null
+          paid_break_minutes: number | null
+          shift_id: string | null
+          unpaid_break_minutes: number | null
+          updated_at: string
+          work_date: string
+          worked_minutes: number | null
+        }
+        Insert: {
+          approval_notes?: string | null
+          attendance_status?: string
+          check_in_time?: string | null
+          check_out_time?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          device_check_in_time?: string | null
+          device_check_out_time?: string | null
+          early_leave_minutes?: number | null
+          employee_id: string
+          id?: string
+          is_approved?: boolean
+          late_minutes?: number | null
+          organization_id: string
+          overtime_minutes?: number | null
+          paid_break_minutes?: number | null
+          shift_id?: string | null
+          unpaid_break_minutes?: number | null
+          updated_at?: string
+          work_date: string
+          worked_minutes?: number | null
+        }
+        Update: {
+          approval_notes?: string | null
+          attendance_status?: string
+          check_in_time?: string | null
+          check_out_time?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          device_check_in_time?: string | null
+          device_check_out_time?: string | null
+          early_leave_minutes?: number | null
+          employee_id?: string
+          id?: string
+          is_approved?: boolean
+          late_minutes?: number | null
+          organization_id?: string
+          overtime_minutes?: number | null
+          paid_break_minutes?: number | null
+          shift_id?: string | null
+          unpaid_break_minutes?: number | null
+          updated_at?: string
+          work_date?: string
+          worked_minutes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_records_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_records_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "shifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_summary: {
+        Row: {
+          absent_days: number
+          computed_at: string
+          early_leave_count: number
+          employee_id: string
+          holiday_days: number
+          id: string
+          late_count: number
+          leave_days: number
+          month: number
+          organization_id: string
+          present_days: number
+          sick_days: number
+          total_overtime_minutes: number
+          total_worked_minutes: number
+          total_working_days: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          absent_days?: number
+          computed_at?: string
+          early_leave_count?: number
+          employee_id: string
+          holiday_days?: number
+          id?: string
+          late_count?: number
+          leave_days?: number
+          month: number
+          organization_id: string
+          present_days?: number
+          sick_days?: number
+          total_overtime_minutes?: number
+          total_worked_minutes?: number
+          total_working_days?: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          absent_days?: number
+          computed_at?: string
+          early_leave_count?: number
+          employee_id?: string
+          holiday_days?: number
+          id?: string
+          late_count?: number
+          leave_days?: number
+          month?: number
+          organization_id?: string
+          present_days?: number
+          sick_days?: number
+          total_overtime_minutes?: number
+          total_worked_minutes?: number
+          total_working_days?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_summary_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_summary_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
