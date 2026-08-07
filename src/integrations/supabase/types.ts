@@ -2488,7 +2488,13 @@ export type Database = {
       is_staff_manager: { Args: never; Returns: boolean }
     }
     Enums: {
-      app_role: "administrator" | "manager" | "receptionist" | "employee"
+      app_role:
+        | "administrator"
+        | "manager"
+        | "receptionist"
+        | "employee"
+        | "doctor"
+        | "patient"
       employment_status:
         | "probation"
         | "active"
@@ -2623,7 +2629,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["administrator", "manager", "receptionist", "employee"],
+      app_role: [
+        "administrator",
+        "manager",
+        "receptionist",
+        "employee",
+        "doctor",
+        "patient",
+      ],
       employment_status: [
         "probation",
         "active",
