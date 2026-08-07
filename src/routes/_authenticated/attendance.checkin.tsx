@@ -82,7 +82,7 @@ function AttendanceCheckInPage() {
     queryFn: async () => {
       if (!myEmployee?.id) return [];
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0] ?? "";
       const { data } = await supabase
         .from("attendance_records")
         .select(
@@ -90,7 +90,7 @@ function AttendanceCheckInPage() {
         )
         .eq("employee_id", myEmployee.id)
         .eq("work_date", today)
-        .single();
+        .maybeSingle();
 
       return data;
     },
@@ -102,7 +102,7 @@ function AttendanceCheckInPage() {
     mutationFn: async () => {
       if (!myEmployee?.id) throw new Error("Không tìm thấy hồ sơ nhân viên");
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0] ?? "";
       const now = new Date();
 
       // Check if already checked in today
@@ -153,7 +153,7 @@ function AttendanceCheckInPage() {
         const { error } = await supabase.from("attendance_records").insert([
           {
             employee_id: myEmployee.id,
-            organization_id: myEmployee.organization_id || "org_default",
+            organization_id: "org_default",
             work_date: today,
             check_in_time: now.toISOString(),
             attendance_status: "present",
