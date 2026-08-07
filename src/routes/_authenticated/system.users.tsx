@@ -135,7 +135,7 @@ function SystemUsersPage() {
                     </TableCell>
                     <TableCell>
                       <Select
-                        value={user.role ?? undefined}
+                        value={user.role ?? ""}
                         disabled={isSelf || setRoleMutation.isPending}
                         onValueChange={(value) =>
                           setRoleMutation.mutate({ userId: user.id, role: value as AppRole })

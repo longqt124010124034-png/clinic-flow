@@ -86,8 +86,8 @@ function ExportReportsPage() {
           employee_id,
           check_in_time,
           check_out_time,
-          duration_minutes,
-          status,
+          worked_minutes,
+          attendance_status,
           employees:employee_id (
             id,
             full_name,
@@ -116,7 +116,7 @@ function ExportReportsPage() {
       if (error) throw error;
       return data || [];
     },
-    enabled: filterType !== "date-range" || (startDate && endDate),
+    enabled: filterType !== "date-range" || Boolean(startDate && endDate),
   });
 
   const handleExport = async () => {
@@ -140,13 +140,13 @@ function ExportReportsPage() {
           record.employees?.full_name || "N/A",
           new Date(record.check_in_time).toLocaleString("vi-VN"),
           record.check_out_time ? new Date(record.check_out_time).toLocaleString("vi-VN") : "Chưa ra",
-          record.duration_minutes || 0,
-          record.status || "Có mặt",
+          record.worked_minutes || 0,
+          record.attendance_status || "Có mặt",
         ]);
 
         const csv = [
           headers.join(","),
-          ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
+          ...rows.map((row: (string | number)[]) => row.map((cell) => `"${cell}"`).join(",")),
         ].join("\n");
 
         const blob = new Blob([csv], { type: "text/csv" });
@@ -176,7 +176,7 @@ function ExportReportsPage() {
   }
 
   if (staffQuery.error || departmentsQuery.error) {
-    return <ErrorState error="Lỗi tải dữ liệu" />;
+    return <ErrorState description="Lỗi tải dữ liệu" />;
   }
 
   const recordCount = attendanceQuery.data?.length || 0;
@@ -186,7 +186,6 @@ function ExportReportsPage() {
       <PageHeader
         title="Xuất Báo Cáo"
         description="Xuất dữ liệu chấm công theo định dạng Excel, PDF, CSV hoặc Docs"
-        icon={Download}
       />
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -377,12 +376,12 @@ function ExportReportsPage() {
                             ? new Date(record.check_out_time).toLocaleString("vi-VN")
                             : "—"}
                         </td>
-                        <td className="px-4 py-2 text-right">{record.duration_minutes || 0}</td>
+                        <td className="px-4 py-2 text-right">{record.worked_minutes || 0}</td>
                         <td className="px-4 py-2">
                           <Badge
-                            variant={record.status === "late" ? "destructive" : "default"}
+                            variant={record.attendance_status === "late" ? "destructive" : "default"}
                           >
-                            {record.status || "Có mặt"}
+                            {record.attendance_status || "Có mặt"}
                           </Badge>
                         </td>
                       </tr>

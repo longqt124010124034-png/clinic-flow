@@ -125,7 +125,7 @@ function SystemSyncPage() {
           .eq("id", configQuery.data.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("device_configs").insert(payload);
+        const { error } = await supabase.from("device_configs").insert([payload]);
         if (error) throw error;
       }
     },
