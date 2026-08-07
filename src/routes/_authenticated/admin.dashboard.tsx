@@ -42,7 +42,7 @@ function AdminDashboard() {
   const statsQuery = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0] ?? "";
 
       const [
         employees,
@@ -113,6 +113,9 @@ function AdminDashboard() {
   }
 
   const stats = statsQuery.data;
+  if (!stats) {
+    return null;
+  }
   const attendanceRate = stats.total_employees > 0 
     ? Math.round(((stats.attendance_today) / stats.total_employees) * 100)
     : 0;
