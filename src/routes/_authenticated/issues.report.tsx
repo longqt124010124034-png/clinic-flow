@@ -45,8 +45,8 @@ function IssueReport() {
       const { error } = await supabase
         .from("error_reports")
         .insert({
-          user_id: session.user.id,
-          user_email: session.user.email,
+          user_id: session?.user.id ?? "",
+          user_email: session?.user.email ?? "",
           category: data.category,
           priority: data.priority,
           title: data.title,

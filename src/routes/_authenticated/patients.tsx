@@ -129,7 +129,7 @@ function PatientsPage() {
   }
 
   if (patientsQuery.error || appointmentsStats.error) {
-    return <ErrorState error="Lỗi tải dữ liệu bệnh nhân" />;
+    return <ErrorState description="Lỗi tải dữ liệu bệnh nhân" />;
   }
 
   const patients = patientsQuery.data || [];
@@ -140,8 +140,7 @@ function PatientsPage() {
       <PageHeader
         title="Quản lý bệnh nhân"
         description="Xem, chỉnh sửa hồ sơ bệnh nhân và theo dõi lịch khám"
-        icon={Users}
-        action={
+        actions={
           <Button onClick={() => setShowAddForm(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Thêm bệnh nhân

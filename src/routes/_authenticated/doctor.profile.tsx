@@ -49,13 +49,14 @@ function DoctorProfile() {
     queryKey: ["doctor-info", session?.user.id],
     enabled: Boolean(session?.user.id),
     queryFn: async () => {
+      if (!session) throw new Error("Missing session");
       const [employeeResult, departmentResult] = await Promise.all([
         supabase
           .from("employees")
           .select(
             "id, full_name, email, phone, employment_status, start_date, created_at, department_id"
           )
-          .eq("email", session.user.email)
+          .eq("email", session.user.email ?? "")
           .maybeSingle(),
         supabase.from("departments").select("id, name"),
       ]);
@@ -72,7 +73,7 @@ function DoctorProfile() {
         license_number: "SK-2024-001",
         employment_status: employee?.employment_status || "active",
         department: department,
-        start_date: employee?.start_date || new Date().toISOString().split("T")[0],
+        start_date: employee?.start_date || (new Date().toISOString().split("T")[0] ?? ""),
         qualification: "Bác sĩ nha khoa",
       };
     },
@@ -112,9 +113,7 @@ function DoctorProfile() {
             <div className="space-y-3 flex-1">
               <div className="flex items-center gap-3">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 text-xl font-bold text-white">
-                  {doctor.full_name
-                    .split(" ")
-                    .slice(-1)[0]
+                  {(doctor.full_name.split(" ").slice(-1)[0] ?? "?")
                     .charAt(0)
                     .toUpperCase()}
                 </div>

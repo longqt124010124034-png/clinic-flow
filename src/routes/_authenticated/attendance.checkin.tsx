@@ -68,7 +68,7 @@ function AttendanceCheckInPage() {
 
       const { data } = await supabase
         .from("employees")
-        .select("id, full_name, employee_code, avatar_url, department:departments(name)")
+        .select("id, full_name, employee_code, avatar_url, organization_id, department:departments(name)")
         .eq("email", userData.user.email)
         .single();
 
@@ -80,7 +80,7 @@ function AttendanceCheckInPage() {
   const { data: todayCheckIns } = useQuery({
     queryKey: ["today-checkins", myEmployee?.id],
     queryFn: async () => {
-      if (!myEmployee?.id) return [];
+      if (!myEmployee?.id) return null;
 
       const today = new Date().toISOString().split("T")[0] ?? "";
       const { data } = await supabase
@@ -153,7 +153,7 @@ function AttendanceCheckInPage() {
         const { error } = await supabase.from("attendance_records").insert([
           {
             employee_id: myEmployee.id,
-            organization_id: "org_default",
+            organization_id: myEmployee.organization_id,
             work_date: today,
             check_in_time: now.toISOString(),
             attendance_status: "present",

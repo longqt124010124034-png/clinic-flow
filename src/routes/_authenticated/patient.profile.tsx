@@ -60,10 +60,11 @@ function PatientProfile() {
     queryKey: ["patient-info", session?.user.id],
     enabled: Boolean(session?.user.id),
     queryFn: async () => {
+      if (!session) throw new Error("Missing session");
       const { data, error } = await supabase
         .from("patients")
         .select("*")
-        .eq("email", session.user.email)
+        .eq("email", session.user.email ?? "")
         .maybeSingle();
 
       if (error) throw error;
@@ -151,9 +152,7 @@ function PatientProfile() {
             <div className="space-y-3 flex-1">
               <div className="flex items-center gap-4">
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-cyan-600 text-2xl font-bold text-white">
-                  {patient.full_name
-                    .split(" ")
-                    .slice(-1)[0]
+                  {(patient.full_name.split(" ").slice(-1)[0] ?? "?")
                     .charAt(0)
                     .toUpperCase()}
                 </div>

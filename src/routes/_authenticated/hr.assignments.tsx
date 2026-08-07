@@ -146,7 +146,7 @@ function AssignmentPage() {
         .from("employees")
         .update({
           department_id: assignment.department_id,
-          shift_id: assignment.shift_id,
+          default_shift_id: assignment.shift_id,
           position_id: assignment.position_id,
           updated_at: new Date().toISOString(),
         })

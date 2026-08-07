@@ -87,7 +87,7 @@ function AppointmentsPage() {
         query = query.eq("status", statusFilter);
       }
 
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0] ?? "";
       if (dateFilter === "today") {
         query = query.eq("appointment_date", today);
       } else if (dateFilter === "upcoming") {
