@@ -113,7 +113,7 @@ function SystemUsersPage() {
       const { error } = await supabase.rpc("admin_review_user", {
         target_user_id: userId,
         decision,
-        new_role: role ?? undefined,
+        ...(role ? { new_role: role } : {}),
       });
       if (error) throw error;
     },
