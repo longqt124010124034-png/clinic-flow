@@ -30,7 +30,7 @@ export function AppSidebar({ roles, clinicName, logoUrl }: AppSidebarProps) {
   const isActive = (to: string) => pathname === to || pathname.startsWith(`${to}/`);
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-1 py-2">
           <div className="brand-gradient flex size-9 shrink-0 items-center justify-center rounded-xl">
@@ -49,22 +49,36 @@ export function AppSidebar({ roles, clinicName, logoUrl }: AppSidebarProps) {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="gap-0 py-2">
         {groups.map((group) => (
-          <SidebarGroup key={group.label}>
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+          <SidebarGroup key={group.label} className="py-1.5">
+            <SidebarGroupLabel className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+              {group.label}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.to}>
-                    <SidebarMenuButton asChild isActive={isActive(item.to)} tooltip={item.title}>
-                      <Link to={item.to} className="flex items-center gap-2">
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item) => {
+                  const active = isActive(item.to);
+                  return (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        tooltip={item.title}
+                        className="rounded-lg transition-colors data-[active=true]:font-medium"
+                      >
+                        <Link to={item.to} className="flex items-center gap-2.5">
+                          <item.icon
+                            className={
+                              active ? "size-4 text-sidebar-primary" : "size-4 text-muted-foreground"
+                            }
+                          />
+                          <span className="truncate">{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -73,3 +87,4 @@ export function AppSidebar({ roles, clinicName, logoUrl }: AppSidebarProps) {
     </Sidebar>
   );
 }
+
