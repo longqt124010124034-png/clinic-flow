@@ -862,38 +862,50 @@ export type Database = {
         Row: {
           created_at: string
           device_id: string | null
+          device_user_id: string | null
           event_time: string
           event_type: string
           id: string
           mask_detected: boolean | null
           organization_id: string
+          process_note: string | null
+          processed: boolean
           raw_data: Json
           temperature: number | null
           user_id: string | null
+          verify_mode: string
         }
         Insert: {
           created_at?: string
           device_id?: string | null
+          device_user_id?: string | null
           event_time?: string
           event_type: string
           id?: string
           mask_detected?: boolean | null
           organization_id?: string
+          process_note?: string | null
+          processed?: boolean
           raw_data?: Json
           temperature?: number | null
           user_id?: string | null
+          verify_mode?: string
         }
         Update: {
           created_at?: string
           device_id?: string | null
+          device_user_id?: string | null
           event_time?: string
           event_type?: string
           id?: string
           mask_detected?: boolean | null
           organization_id?: string
+          process_note?: string | null
+          processed?: boolean
           raw_data?: Json
           temperature?: number | null
           user_id?: string | null
+          verify_mode?: string
         }
         Relationships: [
           {
@@ -2378,6 +2390,9 @@ export type Database = {
       }
       user_profiles: {
         Row: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -2389,6 +2404,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -2400,6 +2418,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -2457,6 +2478,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_review_user: {
+        Args: {
+          decision: string
+          new_role?: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Returns: undefined
+      }
+      admin_set_user_active: {
+        Args: { active: boolean; target_user_id: string }
+        Returns: undefined
+      }
       admin_set_user_role: {
         Args: {
           new_role: Database["public"]["Enums"]["app_role"]
@@ -2468,6 +2501,9 @@ export type Database = {
       ensure_user_profile: {
         Args: never
         Returns: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
