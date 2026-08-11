@@ -67,32 +67,40 @@ export function AppShell({
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar roles={profile.roles} clinicName={clinicName} logoUrl={logoUrl} />
 
-        <SidebarInset className="min-w-0">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/90 px-4 backdrop-blur">
-            <SidebarTrigger />
+        <SidebarInset className="min-w-0 bg-background">
+          <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/70 bg-background/85 px-4 backdrop-blur-md">
+            <SidebarTrigger className="text-muted-foreground" />
+            <span className="hidden h-5 w-px bg-border sm:block" />
             <Breadcrumb className="hidden sm:block">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/dashboard">{crumbs.group}</Link>
+                    <Link to="/dashboard" className="text-muted-foreground">
+                      {crumbs.group}
+                    </Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{crumbs.page}</BreadcrumbPage>
+                  <BreadcrumbPage className="font-medium">{crumbs.page}</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
 
-            <div className="ml-auto flex items-center gap-2">
-              <Button variant="ghost" size="icon" aria-label="Thông báo">
+            <div className="ml-auto flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Thông báo"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 <Bell className="size-4" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="gap-2 px-2">
-                    <Avatar className="size-8">
-                      <AvatarFallback className="bg-primary-soft text-xs font-semibold text-primary">
+                  <Button variant="ghost" className="h-10 gap-2 px-2">
+                    <Avatar className="size-7">
+                      <AvatarFallback className="bg-primary-soft text-[11px] font-semibold text-primary">
                         {initials(profile.fullName)}
                       </AvatarFallback>
                     </Avatar>
@@ -100,7 +108,7 @@ export function AppShell({
                       <span className="block text-sm font-medium leading-tight">
                         {profile.fullName}
                       </span>
-                      <span className="block text-xs text-muted-foreground">
+                      <span className="block text-xs font-normal text-muted-foreground">
                         {ROLE_LABELS[role]}
                       </span>
                     </span>
@@ -125,12 +133,14 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-[1400px] flex-1 p-4 md:p-6">{children}</main>
+          <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 md:px-8 md:py-8">
+            {children}
+          </main>
 
-          <footer className="border-t border-border px-4 py-4 text-xs text-muted-foreground md:px-6">
+          <footer className="mt-auto border-t border-border/70 px-4 py-4 text-xs text-muted-foreground md:px-8">
             <span>{clinicName}</span>
-            <Badge variant="secondary" className="ml-2 align-middle">
-              Phiên bản Giai đoạn 1
+            <Badge variant="secondary" className="ml-2 align-middle font-normal">
+              Hệ thống nội bộ
             </Badge>
           </footer>
         </SidebarInset>
@@ -138,3 +148,4 @@ export function AppShell({
     </SidebarProvider>
   );
 }
+
