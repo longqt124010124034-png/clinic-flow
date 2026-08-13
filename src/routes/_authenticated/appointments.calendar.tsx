@@ -256,7 +256,7 @@ function AppointmentsCalendarPage() {
         description="Calendar theo phòng điều trị và khung giờ — nhấn vào ô trống để đặt hẹn ngay."
         actions={
           <Button asChild className="w-full sm:w-auto">
-            <Link to="/appointments/booking" search={{ date: selectedDate }}>
+            <Link to="/appointments/booking" search={{ date: selectedDate, time: undefined, room: undefined }}>
               <Plus className="mr-2 size-4" />
               Tạo hẹn mới
             </Link>

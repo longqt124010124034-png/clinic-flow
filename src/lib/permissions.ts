@@ -8,6 +8,7 @@ import {
   CalendarDays,
   CalendarRange,
   ClipboardList,
+  DoorOpen,
   Clock,
   DollarSign,
   FileSpreadsheet,
@@ -55,6 +56,7 @@ export type NavGroup = {
 const ALL: AppRole[] = ["administrator", "manager", "receptionist", "employee", "doctor", "patient"];
 const STAFF: AppRole[] = ["administrator", "manager"];
 const FRONT_DESK: AppRole[] = ["administrator", "manager", "receptionist"];
+const CLINIC_FLOOR: AppRole[] = ["administrator", "manager", "receptionist", "doctor"];
 const ADMIN: AppRole[] = ["administrator"];
 const DOCTOR: AppRole[] = ["administrator", "doctor"];
 const PATIENT: AppRole[] = ["administrator", "patient"];
