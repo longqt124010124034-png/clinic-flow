@@ -18,6 +18,7 @@ import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedPatientsRouteImport } from './routes/_authenticated/patients'
 import { Route as AuthenticatedPositionsRouteImport } from './routes/_authenticated/positions'
+import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/rooms'
 import { Route as AuthenticatedShiftsRouteImport } from './routes/_authenticated/shifts'
 import { Route as AuthenticatedAdminDashboardRouteImport } from './routes/_authenticated/admin.dashboard'
 import { Route as AuthenticatedAdminIssuesRouteImport } from './routes/_authenticated/admin.issues'
@@ -97,6 +98,11 @@ const AuthenticatedPatientsRoute = AuthenticatedPatientsRouteImport.update({
 const AuthenticatedPositionsRoute = AuthenticatedPositionsRouteImport.update({
   id: '/positions',
   path: '/positions',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRoomsRoute = AuthenticatedRoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedShiftsRoute = AuthenticatedShiftsRouteImport.update({
@@ -308,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/employees': typeof AuthenticatedEmployeesRoute
   '/patients': typeof AuthenticatedPatientsRoute
   '/positions': typeof AuthenticatedPositionsRoute
+  '/rooms': typeof AuthenticatedRoomsRoute
   '/shifts': typeof AuthenticatedShiftsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/issues': typeof AuthenticatedAdminIssuesRoute
@@ -352,6 +359,7 @@ export interface FileRoutesByTo {
   '/employees': typeof AuthenticatedEmployeesRoute
   '/patients': typeof AuthenticatedPatientsRoute
   '/positions': typeof AuthenticatedPositionsRoute
+  '/rooms': typeof AuthenticatedRoomsRoute
   '/shifts': typeof AuthenticatedShiftsRoute
   '/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/admin/issues': typeof AuthenticatedAdminIssuesRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
   '/_authenticated/patients': typeof AuthenticatedPatientsRoute
   '/_authenticated/positions': typeof AuthenticatedPositionsRoute
+  '/_authenticated/rooms': typeof AuthenticatedRoomsRoute
   '/_authenticated/shifts': typeof AuthenticatedShiftsRoute
   '/_authenticated/admin/dashboard': typeof AuthenticatedAdminDashboardRoute
   '/_authenticated/admin/issues': typeof AuthenticatedAdminIssuesRoute
@@ -444,6 +453,7 @@ export interface FileRouteTypes {
     | '/employees'
     | '/patients'
     | '/positions'
+    | '/rooms'
     | '/shifts'
     | '/admin/dashboard'
     | '/admin/issues'
@@ -488,6 +498,7 @@ export interface FileRouteTypes {
     | '/employees'
     | '/patients'
     | '/positions'
+    | '/rooms'
     | '/shifts'
     | '/admin/dashboard'
     | '/admin/issues'
@@ -533,6 +544,7 @@ export interface FileRouteTypes {
     | '/_authenticated/employees'
     | '/_authenticated/patients'
     | '/_authenticated/positions'
+    | '/_authenticated/rooms'
     | '/_authenticated/shifts'
     | '/_authenticated/admin/dashboard'
     | '/_authenticated/admin/issues'
@@ -639,6 +651,13 @@ declare module '@tanstack/react-router' {
       path: '/positions'
       fullPath: '/positions'
       preLoaderRoute: typeof AuthenticatedPositionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rooms': {
+      id: '/_authenticated/rooms'
+      path: '/rooms'
+      fullPath: '/rooms'
+      preLoaderRoute: typeof AuthenticatedRoomsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/shifts': {
@@ -907,6 +926,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
   AuthenticatedPatientsRoute: typeof AuthenticatedPatientsRoute
   AuthenticatedPositionsRoute: typeof AuthenticatedPositionsRoute
+  AuthenticatedRoomsRoute: typeof AuthenticatedRoomsRoute
   AuthenticatedShiftsRoute: typeof AuthenticatedShiftsRoute
   AuthenticatedAdminDashboardRoute: typeof AuthenticatedAdminDashboardRoute
   AuthenticatedAdminIssuesRoute: typeof AuthenticatedAdminIssuesRoute
@@ -947,6 +967,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
   AuthenticatedPatientsRoute: AuthenticatedPatientsRoute,
   AuthenticatedPositionsRoute: AuthenticatedPositionsRoute,
+  AuthenticatedRoomsRoute: AuthenticatedRoomsRoute,
   AuthenticatedShiftsRoute: AuthenticatedShiftsRoute,
   AuthenticatedAdminDashboardRoute: AuthenticatedAdminDashboardRoute,
   AuthenticatedAdminIssuesRoute: AuthenticatedAdminIssuesRoute,
