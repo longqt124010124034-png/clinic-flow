@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
   Calendar,
@@ -32,6 +32,11 @@ import { useAuthSession, useSessionProfile } from "@/hooks/use-session";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/appointments/booking")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    date: typeof search['date'] === "string" ? (search['date'] as string) : undefined,
+    time: typeof search['time'] === "string" ? (search['time'] as string) : undefined,
+    room: typeof search['room'] === "string" ? (search['room'] as string) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Đặt hẹn khám — Việt Smile Clinic Suite" },
@@ -63,11 +68,15 @@ interface Appointment {
 function AppointmentBookingPage() {
   const { session } = useAuthSession();
   const profileQuery = useSessionProfile(session?.user.id);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0] ?? "");
+  const searchParams = useSearch({ from: "/_authenticated/appointments/booking" });
+  const [selectedDate, setSelectedDate] = useState(
+    searchParams.date ?? new Date().toISOString().split("T")[0] ?? "",
+  );
+  const [selectedRoom, setSelectedRoom] = useState(searchParams.room ?? "");
   const [selectedPatient, setSelectedPatient] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [selectedService, setSelectedService] = useState("");
-  const [time, setTime] = useState("09:00");
+  const [time, setTime] = useState(searchParams.time ?? "09:00");
   const [notes, setNotes] = useState("");
   const [showReminderForm, setShowReminderForm] = useState(false);
 
@@ -107,6 +116,21 @@ function AppointmentBookingPage() {
         .from("services")
         .select("id, name, default_duration_minutes")
         .order("name");
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Fetch treatment rooms (slot owners)
+  const roomsQuery = useQuery({
+    queryKey: ["rooms-for-booking"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("treatment_rooms")
+        .select("id, name, code")
+        .is("deleted_at", null)
+        .eq("is_active", true)
+        .order("display_order");
       if (error) throw error;
       return data || [];
     },
@@ -180,6 +204,7 @@ function AppointmentBookingPage() {
           end_time: endTime,
           service_id: selectedService,
           notes,
+          room_id: selectedRoom || null,
           status: "scheduled",
           reminder_sent: false,
         })
@@ -194,6 +219,7 @@ function AppointmentBookingPage() {
       setSelectedDoctor("");
       setSelectedService("");
       setTime("09:00");
+      setSelectedRoom("");
       setNotes("");
       appointmentsQuery.refetch();
     },
@@ -311,6 +337,23 @@ function AppointmentBookingPage() {
                   {doctorsQuery.data?.map((doctor: any) => (
                     <SelectItem key={doctor.id} value={doctor.id}>
                       {doctor.full_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Room Selection */}
+            <div className="space-y-2">
+              <Label>Phòng điều trị</Label>
+              <Select value={selectedRoom} onValueChange={setSelectedRoom}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn phòng / ghế..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {roomsQuery.data?.map((room) => (
+                    <SelectItem key={room.id} value={room.id}>
+                      {room.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

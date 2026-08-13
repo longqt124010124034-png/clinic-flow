@@ -8,6 +8,7 @@ import {
   CalendarDays,
   CalendarRange,
   ClipboardList,
+  DoorOpen,
   Clock,
   DollarSign,
   FileSpreadsheet,
@@ -55,6 +56,7 @@ export type NavGroup = {
 const ALL: AppRole[] = ["administrator", "manager", "receptionist", "employee", "doctor", "patient"];
 const STAFF: AppRole[] = ["administrator", "manager"];
 const FRONT_DESK: AppRole[] = ["administrator", "manager", "receptionist"];
+const CLINIC_FLOOR: AppRole[] = ["administrator", "manager", "receptionist", "doctor"];
 const ADMIN: AppRole[] = ["administrator"];
 const DOCTOR: AppRole[] = ["administrator", "doctor"];
 const PATIENT: AppRole[] = ["administrator", "patient"];
@@ -73,10 +75,11 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Lịch hẹn",
     items: [
-      { title: "Lịch hẹn", to: "/appointments/calendar", icon: CalendarDays, roles: FRONT_DESK },
-      { title: "Danh sách hẹn", to: "/appointments", icon: ListChecks, roles: FRONT_DESK },
+      { title: "Lịch khám", to: "/appointments/calendar", icon: CalendarDays, roles: CLINIC_FLOOR },
+      { title: "Danh sách hẹn", to: "/appointments", icon: ListChecks, roles: CLINIC_FLOOR },
       { title: "Đặt hẹn khám", to: "/appointments/booking", icon: HeartPulse, roles: FRONT_DESK },
-      { title: "Bệnh nhân", to: "/patients", icon: UsersRound, roles: FRONT_DESK },
+      { title: "Phòng & khung giờ", to: "/rooms", icon: DoorOpen, roles: FRONT_DESK },
+      { title: "Bệnh nhân", to: "/patients", icon: UsersRound, roles: CLINIC_FLOOR },
     ],
   },
   {

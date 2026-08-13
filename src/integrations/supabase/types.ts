@@ -179,6 +179,7 @@ export type Database = {
           patient_id: string
           reminder_sent: boolean
           reminder_sent_at: string | null
+          room_id: string | null
           service_id: string | null
           start_time: string
           status: string
@@ -201,6 +202,7 @@ export type Database = {
           patient_id: string
           reminder_sent?: boolean
           reminder_sent_at?: string | null
+          room_id?: string | null
           service_id?: string | null
           start_time: string
           status?: string
@@ -223,6 +225,7 @@ export type Database = {
           patient_id?: string
           reminder_sent?: boolean
           reminder_sent_at?: string | null
+          room_id?: string | null
           service_id?: string | null
           start_time?: string
           status?: string
@@ -249,6 +252,13 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "treatment_rooms"
             referencedColumns: ["id"]
           },
           {
@@ -2074,6 +2084,63 @@ export type Database = {
           },
         ]
       }
+      room_time_slots: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          is_active: boolean
+          max_parallel: number
+          organization_id: string
+          room_id: string
+          slot_minutes: number
+          start_time: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          is_active?: boolean
+          max_parallel?: number
+          organization_id: string
+          room_id: string
+          slot_minutes?: number
+          start_time: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          is_active?: boolean
+          max_parallel?: number
+          organization_id?: string
+          room_id?: string
+          slot_minutes?: number
+          start_time?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_time_slots_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_time_slots_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "treatment_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       salary_config: {
         Row: {
           absence_deduction: number
@@ -2381,6 +2448,65 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "system_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treatment_rooms: {
+        Row: {
+          capacity: number
+          code: string | null
+          color: string | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          display_order: number
+          equipment: string | null
+          id: string
+          is_active: boolean
+          name: string
+          organization_id: string
+          room_type: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number
+          code?: string | null
+          color?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number
+          equipment?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          organization_id: string
+          room_type?: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          code?: string | null
+          color?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          display_order?: number
+          equipment?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          organization_id?: string
+          room_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_rooms_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"

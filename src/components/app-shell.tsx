@@ -64,11 +64,11 @@ export function AppShell({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
+      <div className="flex min-h-screen w-full overflow-x-hidden bg-background">
         <AppSidebar roles={profile.roles} clinicName={clinicName} logoUrl={logoUrl} />
 
         <SidebarInset className="min-w-0 bg-background">
-          <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/70 bg-background/85 px-4 backdrop-blur-md">
+          <header className="sticky top-0 z-30 flex h-14 w-full min-w-0 items-center gap-2 border-b border-border/70 bg-background/85 px-3 backdrop-blur-md sm:gap-3 sm:px-4">
             <SidebarTrigger className="text-muted-foreground" />
             <span className="hidden h-5 w-px bg-border sm:block" />
             <Breadcrumb className="hidden sm:block">
@@ -104,8 +104,8 @@ export function AppShell({
                         {initials(profile.fullName)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="hidden text-left md:block">
-                      <span className="block text-sm font-medium leading-tight">
+                    <span className="hidden max-w-[10rem] text-left md:block">
+                      <span className="block truncate text-sm font-medium leading-tight">
                         {profile.fullName}
                       </span>
                       <span className="block text-xs font-normal text-muted-foreground">
@@ -133,7 +133,7 @@ export function AppShell({
             </div>
           </header>
 
-          <main className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 md:px-8 md:py-8">
+          <main className="mx-auto w-full min-w-0 max-w-[1400px] flex-1 overflow-x-hidden px-3 py-5 sm:px-4 sm:py-6 md:px-8 md:py-8">
             {children}
           </main>
 
